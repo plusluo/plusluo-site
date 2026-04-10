@@ -1,0 +1,123 @@
+title = "序员先生"
+baseURL = "https://plusluo.site/"
+
+# 生成 robots.txt 以利于 SEO
+enableRobotsTXT = true
+
+# 默认语言设为中文
+defaultContentLanguage = "zh"
+
+# CJK 语言支持
+hasCJKLanguage = true
+
+# 主题配置（Submodule 方式）
+theme = ["bilberry-hugo-theme/v4"]
+
+[params]
+  # 自定义 CSS/JS 模块
+  css_modules = []
+  js_modules = []
+
+  # 作者和 SEO 描述
+  authorName = "plusluo"
+  authorEmail = "plusluo@gmail.com"
+  description = "序员先生的个人博客，分享 AI、技术、投资、认知的思考"
+  keywords = "AI,Agent,技术博客,序员先生,plusluo,投资理财,认知成长"
+
+  # 每页显示文章数量
+  paginate = 7
+
+  # 关闭 MathJax
+  enable_mathjax = false
+
+  # 关闭 Algolia 搜索（未配置 Algolia 服务）
+  algolia_search = false
+
+  # 媒体配置 - 自动裁剪图片
+  resizeImages = true
+
+  # Header 配置
+  subtitle = "探索 AI · 记录技术 · 分享生活"
+  # 如果有 Gravatar 头像可以填邮箱
+  avatarEmail = "plusluo@gmail.com"
+  customImage = "/images/avatar.jpg"
+  overlayIcon = "fa-home"
+  permanentTopNav = false
+  stickyNav = false
+  showHeaderLanguageChooser = false
+
+  # 内容配置
+  enableMomentJs = false
+  dateFormat = "2006-01-02"
+  showReadingTime = true
+  tocMinWordCount = 400
+
+  # Footer 配置
+  showFooter = true
+  amountLatestPostsInFooter = 7
+  amountCategoriesInFooter = 7
+  showFooterLanguageChooser = false
+
+  # 社交媒体链接
+  showSocialMedia = true
+  socialMediaLinks = [
+    { link = "https://github.com/plusluo", icon = "fab fa-github" },
+    { link = "mailto:plusluo@gmail.com", icon = "fas fa-envelope" },
+    { link = "https://www.zhihu.com/people/plusluo", icon = "fab fa-zhihu" },
+    { link = "https://mp.weixin.qq.com", icon = "fab fa-weixin", title = "公众号：序员先生" },
+  ]
+
+  # 归档配置
+  showArchive = true
+  archiveDateGrouping = "2006-01"
+
+  # 版权配置
+  copyrightBy = "序员先生"
+  copyrightUseCurrentYear = true
+  copyrightYearOverride = "2025"
+  copyrightUrl = "https://github.com/plusluo"
+  creditsText = "Bilberry Hugo Theme"
+  creditsUrl = "https://github.com/Lednerb/bilberry-hugo-theme"
+
+# Google Analytics（暂不启用）
+[services]
+  [services.googleAnalytics]
+    ID = ''
+
+# 语言配置（仅中文）
+[languages]
+  [languages.zh]
+    weight = 1
+    languageName = "中文"
+
+[markup]
+  defaultMarkdownHandler = 'goldmark'
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      # 允许在 Markdown 中使用原始 HTML
+      unsafe = true
+  [markup.highlight]
+    anchorLineNos = false
+    codeFences = true
+    guessSyntax = false
+    lineNos = false
+    lineNumbersInTable = true
+    noClasses = true
+    style = 'monokai'
+    tabWidth = 4
+  [markup.tableOfContents]
+    endLevel = 5
+    ordered = false
+    startLevel = 2
+
+# 分类体系（不要修改）
+[taxonomies]
+  author   = "author"
+  tag      = "tags"
+  category = "categories"
+  series   = "series"
+
+# 输出格式（不要修改）
+[outputs]
+  home = [ "HTML", "JSON", "RSS" ]
+  page = [ "HTML" ]

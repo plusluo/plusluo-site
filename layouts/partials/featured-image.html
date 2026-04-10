@@ -1,0 +1,17 @@
+{{ if .Resources.GetMatch "featuredImage.*" }}
+    <div class="featured-image">
+        <a href="{{ .Permalink }}">
+            {{ if and (.Site.Params.resizeImages | default true) (.Params.resizeImages | default true) }}
+                <img src="{{ ((.Resources.GetMatch "featuredImage.*").Fill "700x350 q95").RelPermalink }}" alt="" loading="lazy">
+            {{ else }}
+                <img src="{{ (.Resources.GetMatch "featuredImage.*").RelPermalink }}" alt="" loading="lazy">
+            {{ end }}
+        </a>
+    </div>
+{{ else if and (isset .Params "featuredimage") (ne .Params.featuredImage "") }}
+    <div class="featured-image">
+        <a href="{{ .Permalink }}">
+            <img src="{{ .Params.featuredImage | relURL }}" alt="" loading="lazy">
+        </a>
+    </div>
+{{ end }}

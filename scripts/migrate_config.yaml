@@ -1,0 +1,144 @@
+# ============================================================
+# 作者: plusluo
+# plusluo-site 内容搬运配置
+# 供 migrate.py 脚本和 OpenClaw AI Agent 使用
+# ============================================================
+
+# --- 路径配置 ---
+paths:
+  # 知识库源目录（相对路径，运行时由参数覆盖）
+  source_root: "../plusluo_doc/my-kb"
+  # 博客目标目录（相对路径）
+  target_root: "../plusluo-site"
+  # 搬运记录文件
+  migration_log: ".migration-log.json"
+
+# --- 排除规则 ---
+exclude:
+  # 排除的目录（相对于 source_root）
+  directories:
+    - "diary"
+  # 排除的文件模式（glob 模式）
+  file_patterns:
+    - "_draft_*"
+    - "INDEX.md"
+    - "work-kb-index.md"
+    - "文档目录概要.md"
+    - "专题导航-*.md"
+    - "专题总入口-*.md"
+  # 最小文件大小（字节），低于此值跳过
+  min_file_size: 200
+  # 最小正文字数（字符），低于此值视为不够完善
+  min_content_chars: 300
+
+# --- 内容类型判定规则 ---
+type_rules:
+  # 代码块占比阈值：超过此比例判定为 code 类型
+  code_block_ratio_threshold: 0.20
+  # 短笔记字数上限：低于此值判定为 status 类型
+  status_max_chars: 500
+  # 长文最低字数：高于此值判定为 article 类型
+  article_min_chars: 800
+
+  # 技术关键词（匹配标题或正文前 200 字，命中则倾向 code 类型）
+  tech_keywords:
+    - "架构"
+    - "方案"
+    - "技术"
+    - "CLI"
+    - "API"
+    - "MCP"
+    - "Setup"
+    - "研究"
+    - "部署"
+    - "配置"
+    - "源码"
+    - "框架"
+    - "引擎"
+    - "算法"
+    - "SDK"
+    - "协议"
+    - "调试"
+    - "性能"
+
+  # 源目录到默认内容类型的映射
+  directory_type_mapping:
+    "articles/文章": "article"
+    "articles/AI生成文章": "article"  # 代码占比高时覆盖为 code
+    "articles/首页": "page"
+    "articles/联系我": "page"
+    "articles/Github": "page"
+    "knowledge/AI编码/OpenClaw全流程分析": "code"
+    "work": "code"  # 默认 code，科普类由关键词覆盖为 article
+
+# --- knowledge/ 笔记拆分配置 ---
+knowledge_split:
+  # 条目分隔符（正则）
+  separator_pattern: "(?:^|\\n)---\\s*\\n###\\s+"
+  # 日期提取正则
+  date_pattern: ">\\s*记录于\\s*(\\d{4}-\\d{2}-\\d{2}(?:\\s+\\d{2}:\\d{2})?)"
+  # 双链语法替换：[[链接文本]] → 链接文本
+  wikilink_pattern: "\\[\\[([^\\]]+)\\]\\]"
+
+# --- 分类与图标映射 ---
+# 每个分类对应一个 Font Awesome 6 图标
+# OpenClaw 根据内容分析结果选择最匹配的分类
+category_icon_mapping:
+  "投资理财":
+    icon: "fa-chart-line"
+    keywords: ["投资", "理财", "股票", "基金", "价值投资", "市场", "交易", "财务", "金融", "复利"]
+  "读书笔记":
+    icon: "fa-book-open"
+    keywords: ["读书", "书评", "阅读", "读后感", "书摘", "推荐书", "书单"]
+  "心理学与认知":
+    icon: "fa-brain"
+    keywords: ["心理", "认知", "人性", "社会学", "行为", "情绪", "思维", "偏见", "决策"]
+  "物理学":
+    icon: "fa-atom"
+    keywords: ["物理", "量子", "相对论", "力学", "电磁", "热力学", "宇宙", "粒子"]
+  "生物学":
+    icon: "fa-dna"
+    keywords: ["生物", "基因", "进化", "细胞", "生态", "遗传", "生命", "DNA"]
+  "汽车知识":
+    icon: "fa-car"
+    keywords: ["汽车", "车", "驾驶", "发动机", "新能源", "电车", "特斯拉", "维修", "保养"]
+  "个人成长":
+    icon: "fa-seedling"
+    keywords: ["成长", "自律", "习惯", "复盘", "反思", "目标", "规划", "效率", "方法论"]
+  "软件研发":
+    icon: "fa-code"
+    keywords: ["编程", "开发", "软件", "代码", "工程", "前端", "后端", "微服务", "DevOps"]
+  "AI 技术":
+    icon: "fa-robot"
+    keywords: ["AI", "人工智能", "大模型", "Agent", "LLM", "GPT", "机器学习", "深度学习", "RAG", "Prompt"]
+  "碎碎念":
+    icon: "fa-comment-dots"
+    keywords: ["随想", "感悟", "日常", "生活", "吐槽", "闲聊", "杂谈"]
+
+# --- Front Matter 转换规则 ---
+frontmatter:
+  # 默认作者
+  default_author: "plusluo"
+  # 默认时区
+  timezone: "+08:00"
+  # 需要去除的字段（从源文件的 front matter 中移除）
+  strip_fields:
+    - "source"
+    - "url"
+    - "weight"
+    - "bookCollapseSection"
+    - "bookFlatSection"
+    - "bookToc"
+  # article/code 类型是否默认启用 TOC
+  toc_for_article: true
+  toc_for_code: true
+  toc_for_status: false
+
+# --- Git 配置 ---
+git:
+  # 是否自动 commit 和 push
+  auto_commit: true
+  # commit 消息模板（{count} 为搬运数量，{date} 为日期）
+  commit_message_template: "content: migrate {count} articles from plusluo_doc ({date})"
+  # 搬运前是否自动 git pull
+  auto_pull: true
