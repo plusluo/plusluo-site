@@ -1,0 +1,396 @@
+/* ===================================================
+   plusluo-site 自定义样式 — 线框简洁风格
+   =================================================== */
+
+/* --- Header 区域：白底 + 底部细线 --- */
+header {
+    background-color: #ffffff !important;
+    color: #333 !important;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* 去掉 header 内部的竖线装饰 */
+header .container:after {
+    display: none !important;
+}
+
+/* header 缩小高度，更紧凑 */
+header .container {
+    min-height: 12rem;
+}
+
+/* ============================
+   标题「序员先生」美化
+   使用渐变下划线装饰 + 字重增强
+   ============================ */
+header .titles h3.title a {
+    color: #2c2c2c !important;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.25em;
+}
+
+/* 标题底部渐变装饰线 —— 从橙色到透明的优雅渐变 */
+header .titles h3.title a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #E8913A 0%, #f5c97a 60%, transparent 100%);
+    border-radius: 2px;
+}
+
+header .titles h3.title a:hover {
+    color: #E8913A !important;
+}
+header .titles h3.title a:hover::after {
+    background: linear-gradient(90deg, #E8913A 0%, #E8913A 40%, #f5c97a 100%);
+}
+
+/* 副标题颜色 + 微调 */
+header .titles .subtitle {
+    color: #888 !important;
+    font-size: 0.85em;
+    margin-top: 0.5em;
+    letter-spacing: 0.02em;
+}
+
+/* ============================
+   问题1：头像 Logo 区域
+   保持原有边框风格，hover 只放大，
+   不显示 overlay 图标覆盖层
+   ============================ */
+header .logo {
+    border: 2px solid #e0e0e0 !important;
+    background-color: #fff !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease-in-out;
+}
+
+/* hover 时头像适当放大，表示可点击 */
+header .logo:hover {
+    transform: scale(1.08);
+}
+
+/* 隐藏 overlay 图标覆盖层，hover 时也不显示 */
+header .logo .overlay {
+    display: none !important;
+}
+
+/* 右上角 toggler 按钮：线框风格 */
+header .toggler {
+    background: transparent !important;
+    color: #666 !important;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+}
+header .toggler:hover {
+    color: #E8913A !important;
+    border-color: #E8913A;
+}
+
+/* ============================
+   导航菜单展开后
+   链接清晰可见
+   ============================ */
+nav {
+    background: #ffffff !important;
+    color: #444 !important;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* 导航链接：深色文字，白色背景下清晰可见 */
+nav ul li a {
+    color: #444 !important;
+    font-weight: 500;
+}
+nav ul li a:hover {
+    color: #E8913A !important;
+    background-color: #faf5ef !important;
+}
+
+/* --- 时间线区域微调 --- */
+/* 时间线竖线用更浅的色 */
+.main:before {
+    background: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* 时间线底部圆点 */
+.main:after {
+    background: #ddd !important;
+}
+
+/* ===================================================
+   文章类型图标搭配专属背景色
+   默认淡色 → hover 正色，与图标主题搭配
+   =================================================== */
+
+/* 通用 bubble 基础样式 */
+.article-wrapper .bubble {
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    transition: all 0.3s ease-in-out;
+}
+
+/* ---- 投资理财 fa-chart-line：上涨红色 ---- */
+.article-wrapper .bubble .fa-chart-line {
+    color: #fff !important;
+}
+.article-wrapper .bubble:has(.fa-chart-line) {
+    background-color: #e88a8a !important;
+}
+.article-wrapper .bubble:has(.fa-chart-line):hover {
+    background-color: #d43333 !important;
+    transform: scale(1.1);
+}
+
+/* ---- 读书笔记 fa-book-open：书香棕色 ---- */
+.article-wrapper .bubble:has(.fa-book-open) {
+    background-color: #c4a882 !important;
+}
+.article-wrapper .bubble:has(.fa-book-open):hover {
+    background-color: #8B6914 !important;
+    transform: scale(1.1);
+}
+
+/* ---- 心理学与认知 fa-brain：思维紫色 ---- */
+.article-wrapper .bubble:has(.fa-brain) {
+    background-color: #b09fd4 !important;
+}
+.article-wrapper .bubble:has(.fa-brain):hover {
+    background-color: #7B52AB !important;
+    transform: scale(1.1);
+}
+
+/* ---- 物理学 fa-atom：科技蓝 ---- */
+.article-wrapper .bubble:has(.fa-atom) {
+    background-color: #87b5e0 !important;
+}
+.article-wrapper .bubble:has(.fa-atom):hover {
+    background-color: #2878B5 !important;
+    transform: scale(1.1);
+}
+
+/* ---- 生物学 fa-dna：生命绿 ---- */
+.article-wrapper .bubble:has(.fa-dna) {
+    background-color: #8cc5a0 !important;
+}
+.article-wrapper .bubble:has(.fa-dna):hover {
+    background-color: #2E8B57 !important;
+    transform: scale(1.1);
+}
+
+/* ---- 汽车知识 fa-car：金属蓝灰 ---- */
+.article-wrapper .bubble:has(.fa-car) {
+    background-color: #8aa8c4 !important;
+}
+.article-wrapper .bubble:has(.fa-car):hover {
+    background-color: #3A6FA0 !important;
+    transform: scale(1.1);
+}
+
+/* ---- 个人成长 fa-seedling：新芽绿 ---- */
+.article-wrapper .bubble:has(.fa-seedling) {
+    background-color: #94c98e !important;
+}
+.article-wrapper .bubble:has(.fa-seedling):hover {
+    background-color: #3AA835 !important;
+    transform: scale(1.1);
+}
+
+/* ---- 软件研发 fa-code：代码蓝 ---- */
+.article-wrapper .bubble:has(.fa-code) {
+    background-color: #7daed4 !important;
+}
+.article-wrapper .bubble:has(.fa-code):hover {
+    background-color: #1A73E8 !important;
+    transform: scale(1.1);
+}
+
+/* ---- AI 技术 fa-robot：科技橙 ---- */
+.article-wrapper .bubble:has(.fa-robot) {
+    background-color: #e8b07a !important;
+}
+.article-wrapper .bubble:has(.fa-robot):hover {
+    background-color: #E8913A !important;
+    transform: scale(1.1);
+}
+
+/* ---- 碎碎念 fa-comment-dots：柔和灰蓝 ---- */
+.article-wrapper .bubble:has(.fa-comment-dots) {
+    background-color: #a0b4c4 !important;
+}
+.article-wrapper .bubble:has(.fa-comment-dots):hover {
+    background-color: #5A7D9A !important;
+    transform: scale(1.1);
+}
+
+/* ---- 其他默认图标的 fallback ---- */
+/* 相册/图片类 fa-camera */
+.article-wrapper .bubble:has(.fa-camera) {
+    background-color: #d4a0b0 !important;
+}
+.article-wrapper .bubble:has(.fa-camera):hover {
+    background-color: #C0507A !important;
+    transform: scale(1.1);
+}
+
+/* 视频类 fa-video */
+.article-wrapper .bubble:has(.fa-video) {
+    background-color: #d49090 !important;
+}
+.article-wrapper .bubble:has(.fa-video):hover {
+    background-color: #CC3333 !important;
+    transform: scale(1.1);
+}
+
+/* 音频类 fa-music */
+.article-wrapper .bubble:has(.fa-music) {
+    background-color: #c8a4d8 !important;
+}
+.article-wrapper .bubble:has(.fa-music):hover {
+    background-color: #9B59B6 !important;
+    transform: scale(1.1);
+}
+
+/* 链接类 fa-link */
+.article-wrapper .bubble:has(.fa-link) {
+    background-color: #8eccc4 !important;
+}
+.article-wrapper .bubble:has(.fa-link):hover {
+    background-color: #1ABC9C !important;
+    transform: scale(1.1);
+}
+
+/* 默认/文件类 fa-file */
+.article-wrapper .bubble:has(.fa-file) {
+    background-color: #aab8c4 !important;
+}
+.article-wrapper .bubble:has(.fa-file):hover {
+    background-color: #5A7D9A !important;
+    transform: scale(1.1);
+}
+
+/* 默认文章 fa-pencil-alt */
+.article-wrapper .bubble:has(.fa-pencil-alt) {
+    background-color: #c4b498 !important;
+}
+.article-wrapper .bubble:has(.fa-pencil-alt):hover {
+    background-color: #8B7355 !important;
+    transform: scale(1.1);
+}
+
+/* 状态/评论类 fa-comment */
+.article-wrapper .bubble:has(.fa-comment) {
+    background-color: #a0b4c4 !important;
+}
+.article-wrapper .bubble:has(.fa-comment):hover {
+    background-color: #5A7D9A !important;
+    transform: scale(1.1);
+}
+
+/* 引用类 fa-quote-right */
+.article-wrapper .bubble:has(.fa-quote-right) {
+    background-color: #b8c4a0 !important;
+}
+.article-wrapper .bubble:has(.fa-quote-right):hover {
+    background-color: #6B8E23 !important;
+    transform: scale(1.1);
+}
+
+/* ===================================================
+   问题2：文章 meta 区 — 去掉 "/" 分隔符
+   只保留日期，用简洁的小圆点作分隔符（如有多项）
+   =================================================== */
+
+/* 覆盖主题的 "/" 分隔符为空 */
+article .content .meta span:before {
+    content: "" !important;
+    margin: 0 !important;
+}
+
+/* 如果有多个 span，用小圆点分隔 */
+article .content .meta span:not(:first-child):before {
+    content: "·" !important;
+    margin: 0 0.6em !important;
+    color: #ccc !important;
+    font-weight: bold;
+}
+
+/* meta 区域整体样式微调 — 更轻盈 */
+article .content .meta {
+    border-bottom: 1px solid #f0f0f0 !important;
+    padding-bottom: 0.8em !important;
+    margin-bottom: 1.5em !important;
+    font-size: 0.8em !important;
+    color: #999 !important;
+    letter-spacing: 0.5px;
+}
+
+/* 日期前加一个日历小图标 */
+article .content .meta .date:before {
+    content: "\f073" !important;
+    font-family: "Font Awesome 5 Free" !important;
+    font-weight: 900;
+    margin-right: 0.4em;
+    font-size: 0.9em;
+    color: #bbb;
+}
+
+/* ===================================================
+   问题3：文章底部标签区
+   去掉 "/" 分隔符，改为胶囊标签样式
+   =================================================== */
+
+/* 去掉标签之间的 "/" 分隔符 */
+article .footer .tags .links a:not(:last-child):after {
+    content: "" !important;
+}
+
+/* 标签改为胶囊/药丸样式 */
+article .footer .tags .links a {
+    display: inline-block;
+    background-color: #f5f5f5;
+    color: #666 !important;
+    padding: 0.2em 0.75em;
+    margin: 0.15em 0.25em;
+    border-radius: 99px;
+    font-size: 0.85em;
+    border: 1px solid #e8e8e8;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none !important;
+    line-height: 1.6;
+}
+
+/* hover 效果 — 橙色边框 + 橙色文字 + 浅橙色背景 */
+article .footer .tags .links a:hover {
+    background-color: #fff7ef;
+    color: #E8913A !important;
+    border-color: #E8913A;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(232, 145, 58, 0.15);
+}
+
+/* 标签图标颜色微调 */
+article .footer .tags > .fa {
+    color: #bbb !important;
+    font-size: 0.9em;
+}
+
+/* 底部 footer 区域整体微调 */
+article .footer {
+    padding: 0.6em 1.5em !important;
+    background: #fafafa !important;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* --- 全局链接 hover 颜色统一为橙色 --- */
+a:hover {
+    color: #E8913A;
+}

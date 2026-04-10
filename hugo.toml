@@ -15,7 +15,7 @@ theme = ["bilberry-hugo-theme/v4"]
 
 [params]
   # 自定义 CSS/JS 模块
-  css_modules = []
+  css_modules = ["/css/custom.css"]
   js_modules = []
 
   # 作者和 SEO 描述
@@ -36,11 +36,11 @@ theme = ["bilberry-hugo-theme/v4"]
   # 媒体配置 - 自动裁剪图片
   resizeImages = true
 
-  # 主题配色 - 与 avatar 人物橙色衣服搭配的暖色调方案
-  baseColor = "#2D2319"              # Header 背景：暖棕深色（与橙色同色系深色）
-  specialColor = "#3A2E23"           # 按钮区域背景：深咖啡色
-  highlightColor = "#E8913A"         # 高亮/悬停色：橙色（与 avatar 衣服呼应）
-  headerTextColor = "#FFF5EC"        # Header 文字：暖白色（温暖感）
+  # 主题配色 - 简洁线框风格
+  baseColor = "#ffffff"              # Header 背景：纯白
+  specialColor = "#f8f8f8"           # 按钮区域背景：极浅灰
+  highlightColor = "#E8913A"         # 高亮/悬停色：橙色（保留与 avatar 呼应）
+  headerTextColor = "#333333"        # Header 文字：深灰色
 
   # Header 配置
   subtitle = "投资学徒、软件架构师、重度汽车迷。为了完善系统性的认知框架而终身学习与实践。"
