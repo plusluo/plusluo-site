@@ -712,48 +712,75 @@ footer .tip-popup .qrcode-text {
         padding: 0.35em 0.8em !important;
     }
 
-    /* 联系方式移动端：去掉左偏移，两组仍水平排列但间距缩小 */
+    /* --- 联系方式移动端：2×2 网格布局 --- */
     footer .footer-contact {
-        padding: 1.5em 1.5em 2em 1.5em !important;
+        padding: 1.2em 1.5em 1.5em 1.5em !important;
     }
 
-    footer .contact-group {
-        gap: 1em;
-    }
-
+    /* 隐藏竖线分隔符 */
     footer .contact-divider {
-        margin: 0 1.2em;
+        display: none;
+    }
+
+    /* 整行改为 2×2 网格 */
+    footer .contact-row {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    /* 每组占满一行，内部项目均分 */
+    footer .contact-group {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+        width: 100%;
+        -webkit-box-pack: start;
+        -webkit-justify-content: flex-start;
+        justify-content: flex-start;
+        gap: 0;
+    }
+
+    /* 每组之间加间距（第二组=邮箱/公众号行） */
+    footer .contact-group + .contact-group {
+        margin-top: 0.8em;
+        padding-top: 0.8em;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    /* 每个联系项占 50% 宽度 */
+    footer .contact-link {
+        width: 50%;
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 50%;
+        flex: 0 0 50%;
+        box-sizing: border-box;
     }
 
     footer .contact-link > a,
     footer .contact-link a.tip-trigger {
-        font-size: 0.82em !important;
+        font-size: 0.85em !important;
     }
 
     .credits .container {
         padding: 2rem 1.5em !important;
     }
-}
 
-/* 极窄屏：改为竖排 */
-@media (max-width: 480px) {
-    footer .contact-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1em;
+    /* tooltip 弹出框在移动端的位置调整 */
+    footer .tip-popup {
+        left: 0;
+        transform: translateX(0) scale(0.95);
     }
 
-    footer .contact-divider {
-        width: 60%;
-        height: 1px;
-        margin: 0;
-        background: linear-gradient(
-            to right,
-            transparent 0%,
-            #ccc 35%,
-            #999 50%,
-            #ccc 65%,
-            transparent 100%
-        );
+    footer .contact-link--tip.active .tip-popup {
+        transform: translateX(0) scale(1);
+    }
+
+    footer .tip-popup::after,
+    footer .tip-popup::before {
+        left: 2em;
+        transform: none;
     }
 }
