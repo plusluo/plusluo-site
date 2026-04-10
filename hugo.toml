@@ -37,7 +37,7 @@ theme = ["bilberry-hugo-theme/v4"]
   resizeImages = true
 
   # Header 配置
-  subtitle = "探索 AI · 记录技术 · 分享生活"
+  subtitle = "投资学徒、软件架构师、重度汽车迷。为了完善系统性的认知框架而终身学习与实践。"
   # 如果有 Gravatar 头像可以填邮箱
   avatarEmail = "plusluo@gmail.com"
   customImage = "/images/avatar.jpg"
