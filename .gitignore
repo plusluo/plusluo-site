@@ -16,7 +16,9 @@ Thumbs.db
 *.swo
 
 # CodeBuddy 项目数据（保留但不上传）
-.codebuddy/
+.codebuddy/*
+# 但 rules.md 是给 AI 的内容管理规则，需要入库让云端 Agent 也能读到
+!.codebuddy/rules.md
 
 # 网页抓取/导入用的临时脚本和素材（体积大，不上传）
 scripts/
