@@ -1,6 +1,6 @@
 ---
 # 作者: plusluo
-title: "一篇 AI 随手记"
+title: "随手记：关于 AI Agent"
 date: 2026-04-10T20:30:00+08:00
 categories: ["AI 技术", "心理学与认知", "碎碎念"]
 tags: ["AI Agent", "工具观", "生产力", "认知误区"]
