@@ -394,3 +394,366 @@ article .footer {
 a:hover {
     color: #E8913A;
 }
+
+/* ===================================================
+   页面底部 Footer 全面优化
+   =================================================== */
+
+/* --- Footer 整体容器 --- */
+footer {
+    border-top: 1px solid #e8e8e8 !important;
+    border-bottom: none !important;
+    background-color: #fafafa !important;
+    padding-bottom: 0 !important;
+}
+
+/* ============================
+   分类目录 — 置于 .main container 底部
+   间距与翻页按钮上方到文章卡片的 75px 保持一致
+   ============================ */
+
+/* 覆盖 .main 的底部外边距
+   3号区域（分类标签最后一行底部 → footer border-top）
+   需与 1号区域（文章卡片底部 → 翻页按钮顶部）视觉一致 */
+.main.container {
+    margin-bottom: 75px !important;
+}
+
+/* 消除 .paginator 自带的 padding-bottom，避免撑大 2号区域 */
+.paginator {
+    padding-bottom: 0 !important;
+}
+
+.main-categories {
+    /* 与文章卡片左边缘对齐：左侧 100px 是时间线区域 */
+    padding-left: 100px;
+    padding-right: 0;
+    /* 2号区域 = paginator下边缘 → 分类第一行标签上边缘
+       paginator padding-bottom 已置 0
+       CATEGORIES 标题隐藏（仅保留标签按钮）
+       所以 margin-top 就是纯净的 2号间距，应与 1号(75px) 一致 */
+    margin-top: 75px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* 隐藏 CATEGORIES 文字标题（只留分类标签按钮，减少多余高度） */
+.main-categories > a {
+    display: none;
+}
+
+.main-categories ul {
+    margin-top: 0 !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    list-style: none !important;
+    padding: 0 !important;
+}
+
+.main-categories ul li {
+    border-bottom: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.main-categories ul li a {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 0.4em;
+    left: 0 !important;
+    position: relative;
+    background: #fff;
+    color: #555 !important;
+    padding: 0.4em 1em !important;
+    border-radius: 99px;
+    border: 1px solid #e0e0e0;
+    font-size: 0.95em !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.02em;
+    transition: all 0.25s ease-in-out !important;
+    text-decoration: none !important;
+    line-height: 1.5;
+}
+
+.main-categories ul li a .cat-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.4em;
+    height: 1.4em;
+    background: #f0f0f0;
+    color: #999;
+    font-size: 0.78em;
+    font-weight: 600;
+    border-radius: 50%;
+    line-height: 1;
+}
+
+.main-categories ul li a:hover {
+    left: 0 !important;
+    background: #fff7ef !important;
+    color: #E8913A !important;
+    border-color: #E8913A !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(232, 145, 58, 0.15);
+}
+
+.main-categories ul li a:hover .cat-count {
+    background: #E8913A;
+    color: #fff;
+}
+
+/* ============================
+   联系方式 — 两组水平排列，渐变竖线分隔
+   ============================ */
+footer .footer-contact {
+    display: block !important;
+    padding: 1.5rem 0 1.5rem 0 !important;
+    /* 与文章卡片左边缘对齐 */
+    padding-left: 100px !important;
+    box-sizing: border-box;
+}
+
+/* 整行容器：水平排列 */
+footer .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+/* 每组内部水平排列 */
+footer .contact-group {
+    display: flex;
+    align-items: center;
+    gap: 1.8em;
+}
+
+/* 渐变竖线分隔符 —— 中间深两头浅 */
+footer .contact-divider {
+    width: 1px;
+    height: 1.6em;
+    margin: 0 2em;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        #ccc 35%,
+        #999 50%,
+        #ccc 65%,
+        transparent 100%
+    );
+    flex-shrink: 0;
+}
+
+/* 每个联系项 */
+footer .contact-link {
+    position: relative;
+}
+
+footer .contact-link > a,
+footer .contact-link a.tip-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    /* 字体只比分类标签小 2px：分类标签 0.95em ≈ 15.2px，这里用 0.9em ≈ 14.4px */
+    font-size: 0.9em !important;
+    font-weight: 500;
+    color: #555 !important;
+    text-decoration: none !important;
+    transition: color 0.2s ease;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+footer .contact-link em {
+    font-style: normal;
+    font-size: 1.15em;
+    width: 1.2em;
+    text-align: center;
+    color: #888;
+    transition: color 0.2s ease;
+}
+
+footer .contact-link span {
+    color: inherit;
+}
+
+footer .contact-link > a:hover,
+footer .contact-link a.tip-trigger:hover {
+    color: #E8913A !important;
+}
+
+footer .contact-link > a:hover em,
+footer .contact-link a.tip-trigger:hover em {
+    color: #E8913A !important;
+}
+
+/* --- Tooltip 弹出层（邮箱 / 公众号） --- */
+footer .tip-popup {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 10px);
+    transform: translateX(-50%) scale(0.95);
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    padding: 0.8em 1em;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 100;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+footer .tip-popup::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #fff;
+}
+
+footer .tip-popup::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: #e0e0e0;
+}
+
+footer .contact-link--tip.active .tip-popup {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+    pointer-events: auto;
+}
+
+/* 邮箱 tooltip */
+footer .tip-popup .email-text {
+    color: #E8913A;
+    font-weight: 600;
+    font-size: 0.92em;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+}
+
+footer .tip-popup .copy-hint {
+    color: #bbb;
+    font-size: 0.72em;
+    margin-top: 0.3em;
+    display: block;
+}
+
+/* 公众号 tooltip */
+footer .tip-popup.tip-popup--qrcode {
+    padding: 0.6em;
+    white-space: normal;
+    text-align: center;
+}
+
+footer .tip-popup .qrcode-img {
+    display: block;
+    width: 140px;
+    height: 140px;
+    border-radius: 6px;
+}
+
+footer .tip-popup .qrcode-text {
+    color: #999;
+    font-size: 0.72em;
+    margin-top: 0.4em;
+    display: block;
+}
+
+/* ============================
+   Credits 底栏微调
+   ============================ */
+.credits {
+    background: #f5f5f5 !important;
+    border-top: 1px solid #eee;
+}
+
+.credits .container {
+    padding: 2rem 0 !important;
+    font-size: 0.78em !important;
+    color: #aaa !important;
+}
+
+.credits .container a {
+    color: #aaa !important;
+}
+
+.credits .container a:hover {
+    color: #E8913A !important;
+}
+
+/* ============================
+   响应式：移动端适配
+   ============================ */
+@media (max-width: 800px) {
+    /* 分类目录移动端：去掉 100px 左偏移，间距跟移动端翻页按钮一致 */
+    .main-categories {
+        padding: 0 1.5em;
+        margin-top: 50px;
+    }
+
+    .main-categories ul {
+        gap: 0.4em;
+    }
+
+    .main-categories ul li a {
+        font-size: 0.85em !important;
+        padding: 0.35em 0.8em !important;
+    }
+
+    /* 联系方式移动端：去掉左偏移，两组仍水平排列但间距缩小 */
+    footer .footer-contact {
+        padding: 1.5em 1.5em 2em 1.5em !important;
+    }
+
+    footer .contact-group {
+        gap: 1em;
+    }
+
+    footer .contact-divider {
+        margin: 0 1.2em;
+    }
+
+    footer .contact-link > a,
+    footer .contact-link a.tip-trigger {
+        font-size: 0.82em !important;
+    }
+
+    .credits .container {
+        padding: 2rem 1.5em !important;
+    }
+}
+
+/* 极窄屏：改为竖排 */
+@media (max-width: 480px) {
+    footer .contact-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1em;
+    }
+
+    footer .contact-divider {
+        width: 60%;
+        height: 1px;
+        margin: 0;
+        background: linear-gradient(
+            to right,
+            transparent 0%,
+            #ccc 35%,
+            #999 50%,
+            #ccc 65%,
+            transparent 100%
+        );
+    }
+}

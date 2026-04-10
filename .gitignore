@@ -17,3 +17,6 @@ Thumbs.db
 
 # CodeBuddy 项目数据（保留但不上传）
 .codebuddy/
+
+# 网页抓取/导入用的临时脚本和素材（体积大，不上传）
+scripts/

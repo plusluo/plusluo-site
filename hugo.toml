@@ -60,7 +60,7 @@ theme = ["bilberry-hugo-theme/v4"]
 
   # Footer 配置
   showFooter = true
-  amountLatestPostsInFooter = 7
+  amountLatestPostsInFooter = 0
   amountCategoriesInFooter = 7
   showFooterLanguageChooser = false
 

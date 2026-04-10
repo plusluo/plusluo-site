@@ -1,0 +1,122 @@
+{{ if .Site.Params.showFooter | default true }}
+<footer>
+    {{/* 联系方式 — 两组水平排列，渐变竖线分隔 */}}
+    {{ if .Site.Params.showSocialMedia | default true }}
+    <div class="container footer-contact">
+        <div class="contact-row">
+            {{/* 左组：GitHub + 知乎 */}}
+            <div class="contact-group">
+                <a class="contact-link" href="https://github.com/plusluo" target="_blank" rel="noopener">
+                    <em class="fab fa-github"></em>
+                    <span>GitHub</span>
+                </a>
+                <a class="contact-link" href="https://www.zhihu.com/people/plusluo" target="_blank" rel="noopener">
+                    <em class="fab fa-zhihu"></em>
+                    <span>知乎</span>
+                </a>
+            </div>
+            {{/* 渐变分隔竖线 */}}
+            <div class="contact-divider"></div>
+            {{/* 右组：邮箱 + 公众号 */}}
+            <div class="contact-group">
+                <div class="contact-link contact-link--tip" data-tip="email">
+                    <a href="javascript:void(0)" class="tip-trigger">
+                        <em class="fas fa-envelope"></em>
+                        <span>邮箱</span>
+                    </a>
+                    <div class="tip-popup">
+                        <span class="email-text">plusluo@gmail.com</span>
+                        <span class="copy-hint">点击复制</span>
+                    </div>
+                </div>
+                <div class="contact-link contact-link--tip" data-tip="wechat">
+                    <a href="javascript:void(0)" class="tip-trigger">
+                        <em class="fab fa-weixin"></em>
+                        <span>公众号</span>
+                    </a>
+                    <div class="tip-popup tip-popup--qrcode">
+                        <img class="qrcode-img" src="/images/wechat-qrcode.jpg" alt="公众号二维码" />
+                        <span class="qrcode-text">微信扫码关注「序员先生」</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ end }}
+</footer>
+{{ end }}
+
+<div class="credits">
+    <div class="container">
+        <div class="copyright">
+            <a href="{{ .Site.Params.copyrightUrl | default "https://github.com/Lednerb" }}" target="_blank">
+                &copy;
+                {{ if .Site.Params.copyrightUseCurrentYear }}
+                {{ now.Year }}
+                {{ else if gt now.Year (.Site.Params.copyrightYearOverride | default 2018) }}
+                {{ .Site.Params.copyrightYearOverride | default 2018 }} - {{ now.Year }}
+                {{ else }}
+                {{ .Site.Params.copyrightYearOverride | default 2018 }}
+                {{ end }}
+                {{ .Site.Params.copyrightBy | default "by Lednerb" }}
+            </a>
+            {{ with .OutputFormats.Get "rss" -}}
+            -
+            <a href="{{ .Permalink }}">{{ .Name | upper }}</a>
+            {{- end }}
+        </div>
+        <div class="author">
+            <a href="{{ .Site.Params.creditsUrl | default "https://github.com/Lednerb/bilberry-hugo-theme" }}"
+                target="_blank">{{ .Site.Params.creditsText | default "Bilberry Hugo Theme" }}</a>
+        </div>
+    </div>
+</div>
+
+{{/* 联系方式交互脚本 */}}
+<script>
+(function() {
+    // 点击 tip 类型项目时切换弹出框
+    document.querySelectorAll('.contact-link--tip').forEach(function(item) {
+        item.querySelector('.tip-trigger').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var wasActive = item.classList.contains('active');
+            // 先关闭所有
+            document.querySelectorAll('.contact-link--tip.active').forEach(function(el) {
+                el.classList.remove('active');
+            });
+            // 如果之前没打开则打开
+            if (!wasActive) {
+                item.classList.add('active');
+            }
+        });
+    });
+
+    // 点击空白处关闭
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.contact-link--tip')) {
+            document.querySelectorAll('.contact-link--tip.active').forEach(function(el) {
+                el.classList.remove('active');
+            });
+        }
+    });
+
+    // 点击邮箱文本复制
+    document.querySelectorAll('.tip-popup .email-text').forEach(function(el) {
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var email = this.textContent;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(email).then(function() {
+                    var hint = el.parentElement.querySelector('.copy-hint');
+                    if (hint) {
+                        hint.textContent = '✓ 已复制';
+                        setTimeout(function() { hint.textContent = '点击复制'; }, 2000);
+                    }
+                });
+            }
+        });
+    });
+})();
+</script>
