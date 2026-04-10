@@ -510,9 +510,144 @@ footer {
     margin-bottom: 75px !important;
 }
 
-/* 消除 .paginator 自带的 padding-bottom，避免撑大 2号区域 */
+/* ===== 分页器：圆形页码按钮风格 ===== */
+.bilberry-hugo-theme .paginator,
 .paginator {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    margin-left: 100px;
+    margin-top: 75px;
     padding-bottom: 0 !important;
+    flex-wrap: wrap;
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* 强制覆盖主题 .bilberry-hugo-theme .paginator a 的白色背景和方块样式 */
+.bilberry-hugo-theme .paginator a,
+.bilberry-hugo-theme .paginator span,
+.paginator a,
+.paginator span {
+    background: transparent !important;
+    background-color: transparent !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    box-sizing: border-box;
+}
+.bilberry-hugo-theme .paginator a:hover,
+.paginator a:hover {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* 统一所有页码按钮（a 和 span）的圆形风格 */
+.bilberry-hugo-theme .paginator .page-item,
+.paginator .page-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    border: 1.5px solid #ddd !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    color: #555 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    transition: all 0.25s ease !important;
+    cursor: pointer;
+    user-select: none;
+    line-height: 1 !important;
+    padding: 0 !important;
+}
+
+.bilberry-hugo-theme .paginator a.page-item:hover,
+.paginator a.page-item:hover {
+    border-color: #E8913A !important;
+    color: #E8913A !important;
+    background: rgba(232, 145, 58, 0.06) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(232, 145, 58, 0.15);
+}
+
+.bilberry-hugo-theme .paginator .page-current,
+.paginator .page-current {
+    background: #E8913A !important;
+    color: #fff !important;
+    border-color: #E8913A !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 8px rgba(232, 145, 58, 0.25);
+    cursor: default;
+}
+
+/* 前后箭头：无边框无背景，纯图标样式 */
+.bilberry-hugo-theme .paginator .page-prev,
+.bilberry-hugo-theme .paginator .page-next,
+.paginator .page-prev,
+.paginator .page-next {
+    font-size: 15px !important;
+    border: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    color: #888 !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 6px !important;
+}
+
+.bilberry-hugo-theme .paginator a.page-prev:hover,
+.bilberry-hugo-theme .paginator a.page-next:hover,
+.paginator a.page-prev:hover,
+.paginator a.page-next:hover {
+    color: #E8913A !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none;
+    transform: none;
+}
+
+.paginator .page-item.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: #e0e0e0 !important;
+}
+
+/* 禁用状态的箭头也不要边框 */
+.paginator .page-prev.disabled,
+.paginator .page-next.disabled {
+    border: none !important;
+    background: transparent !important;
+}
+
+.paginator .page-ellipsis {
+    border: none !important;
+    background: transparent !important;
+    color: #999 !important;
+    cursor: default;
+    font-size: 16px !important;
+    letter-spacing: 2px;
+    width: auto !important;
+}
+
+/* 响应式：小屏幕下分页器居中 */
+@media screen and (max-width: 960px) {
+    .paginator {
+        margin-left: 0 !important;
+        justify-content: center !important;
+        margin-top: 40px !important;
+        gap: 6px !important;
+    }
+    .paginator .page-item {
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 13px !important;
+    }
 }
 
 .main-categories {

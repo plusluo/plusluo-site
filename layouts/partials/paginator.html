@@ -1,0 +1,73 @@
+{{ if gt .Paginator.TotalPages 1 }}
+    <nav class="paginator" style="background:transparent;background-color:transparent;box-shadow:none;border:none;" aria-label="分页导航">
+        {{/* 上一页箭头 */}}
+        {{ if .Paginator.HasPrev }}
+            <a href="{{ .Paginator.Prev.URL }}" class="page-item page-prev" style="background:transparent;background-color:transparent;" aria-label="上一页">
+                <i class="fa fa-chevron-left"></i>
+            </a>
+        {{ else }}
+            <span class="page-item page-prev disabled" style="background:transparent;background-color:transparent;" aria-hidden="true">
+                <i class="fa fa-chevron-left"></i>
+            </span>
+        {{ end }}
+
+        {{/* 页码数字 */}}
+        {{ $currentPage := .Paginator.PageNumber }}
+        {{ $totalPages := .Paginator.TotalPages }}
+
+        {{/* 计算显示范围：最多显示 7 个页码 */}}
+        {{ $startPage := 1 }}
+        {{ $endPage := $totalPages }}
+
+        {{ if gt $totalPages 7 }}
+            {{ $startPage = sub $currentPage 3 }}
+            {{ $endPage = add $currentPage 3 }}
+
+            {{ if lt $startPage 1 }}
+                {{ $startPage = 1 }}
+                {{ $endPage = 7 }}
+            {{ end }}
+
+            {{ if gt $endPage $totalPages }}
+                {{ $endPage = $totalPages }}
+                {{ $startPage = sub $totalPages 6 }}
+            {{ end }}
+        {{ end }}
+
+        {{/* 第一页 + 省略号 */}}
+        {{ if gt $startPage 1 }}
+            <a href="{{ (index .Paginator.Pagers 0).URL }}" class="page-item" style="background:transparent;background-color:transparent;">1</a>
+            {{ if gt $startPage 2 }}
+                <span class="page-item page-ellipsis" style="background:transparent;background-color:transparent;">…</span>
+            {{ end }}
+        {{ end }}
+
+        {{/* 页码循环 */}}
+        {{ range $i := seq $startPage $endPage }}
+            {{ if eq $i $currentPage }}
+                <span class="page-item page-current">{{ $i }}</span>
+            {{ else }}
+                <a href="{{ (index $.Paginator.Pagers (sub $i 1)).URL }}" class="page-item" style="background:transparent;background-color:transparent;">{{ $i }}</a>
+            {{ end }}
+        {{ end }}
+
+        {{/* 省略号 + 最后一页 */}}
+        {{ if lt $endPage $totalPages }}
+            {{ if lt (add $endPage 1) $totalPages }}
+                <span class="page-item page-ellipsis" style="background:transparent;background-color:transparent;">…</span>
+            {{ end }}
+            <a href="{{ (index .Paginator.Pagers (sub $totalPages 1)).URL }}" class="page-item" style="background:transparent;background-color:transparent;">{{ $totalPages }}</a>
+        {{ end }}
+
+        {{/* 下一页箭头 */}}
+        {{ if .Paginator.HasNext }}
+            <a href="{{ .Paginator.Next.URL }}" class="page-item page-next" style="background:transparent;background-color:transparent;" aria-label="下一页">
+                <i class="fa fa-chevron-right"></i>
+            </a>
+        {{ else }}
+            <span class="page-item page-next disabled" style="background:transparent;background-color:transparent;" aria-hidden="true">
+                <i class="fa fa-chevron-right"></i>
+            </span>
+        {{ end }}
+    </nav>
+{{ end }}
