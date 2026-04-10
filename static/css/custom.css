@@ -2,6 +2,36 @@
    plusluo-site 自定义样式 — 线框简洁风格
    =================================================== */
 
+/* ============================
+   全局字体：Noto Sans SC（思源黑体）
+   中英文风格统一，fallback 到系统中文字体
+   ============================ */
+body.bilberry-hugo-theme,
+.bilberry-hugo-theme {
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+}
+
+.bilberry-hugo-theme .title,
+.bilberry-hugo-theme .subtitle,
+.bilberry-hugo-theme h1,
+.bilberry-hugo-theme h2,
+.bilberry-hugo-theme h3,
+.bilberry-hugo-theme h4,
+.bilberry-hugo-theme h5,
+.bilberry-hugo-theme h6 {
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+}
+
+.bilberry-hugo-theme blockquote {
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+}
+
+/* 代码字体保持 Fira Code 不变 */
+.bilberry-hugo-theme code,
+.bilberry-hugo-theme pre {
+    font-family: 'Fira Code', 'Menlo', 'Consolas', monospace !important;
+}
+
 /* --- Header 区域：白底 + 底部细线 --- */
 header {
     background-color: #ffffff !important;
