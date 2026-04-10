@@ -1,5 +1,5 @@
 title = "序员先生"
-baseURL = "http://plusluo.cn/"
+baseURL = "https://plusluo.cn/"
 
 # 生成 robots.txt 以利于 SEO
 enableRobotsTXT = true
