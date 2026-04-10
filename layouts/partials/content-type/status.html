@@ -1,0 +1,36 @@
+<span class="bubble">
+    <i class="fas fa-fw {{ or .ctx.Params.icon "fa-comment" }}"></i>
+</span>
+
+<article class="status">
+    {{ if .ctx.Resources.GetMatch "featuredImage.*" }}
+        <div class="featured-image">
+            {{ if and (.ctx.Site.Params.resizeImages | default true) (.ctx.Params.resizeImages | default true) }}
+                <img src="{{ ((.ctx.Resources.GetMatch "featuredImage.*").Fill "700x350 q95").RelPermalink }}" alt="" loading="lazy">
+            {{ else }}
+                <img src="{{ (.ctx.Resources.GetMatch "featuredImage.*").RelPermalink }}" alt="" loading="lazy">
+            {{ end }}
+        </div>
+    {{ else if and (isset .ctx.Params "featuredimage") (ne .ctx.Params.featuredImage "") }}
+        <div class="featured-image">
+            <img src="{{ .ctx.Params.featuredImage | relURL }}" alt="" loading="lazy">
+        </div>
+    {{ end }}
+
+    <div class="content">
+        {{ if ( .ctx.Params.showDate | default true ) }}
+            <div class="meta">
+                {{ if ( .ctx.Site.Params.enableMomentJs | default true ) }}
+                    <span class="date moment">{{ .ctx.PublishDate.Format "2006-01-02" }}</span>
+                {{ else }}
+                    <span class="date">{{ .ctx.PublishDate.Format (.ctx.Site.Params.DateFormat | default "2006-01-02") }}</span>
+                {{ end }}
+            </div>
+        {{ end }}
+
+        {{ .ctx.Content }}
+
+    </div>
+
+    {{ partial "article-footer.html" .ctx }}
+</article>

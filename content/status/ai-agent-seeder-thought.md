@@ -1,6 +1,6 @@
 ---
 # 作者: plusluo
-title: "关于 AI 的随记"
+title: "一篇 AI 随手记"
 date: 2026-04-10T20:30:00+08:00
 categories: ["AI 技术", "心理学与认知", "碎碎念"]
 tags: ["AI Agent", "工具观", "生产力", "认知误区"]
@@ -8,11 +8,10 @@ author: "plusluo"
 toc: false
 icon: "fa-comment-dots"
 summary: "很多人追逐 AI Agent，不是因为手上已经有业务或流程，而是因为看见别人提高了效率，于是自己也跟着焦虑入场。但没有土地的人，买来再先进的播种机，也种不出粮食。"
+featuredImage: "/images/ai-agent-seeder-thought.png"
 ---
 
 今天想到一个比喻：AI Agent 更像播种机，不是土地。
-
-![AI Agent 像播种机，不是土地](ai-agent-seeder-thought.png)
 
 如果你本来就是农民，手上有地，也知道要种什么，那么自动播种机当然很有价值。它能帮你更快播种、更高效管理，把已有的生产过程放大。
 
