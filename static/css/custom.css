@@ -420,6 +420,67 @@ article .footer {
     border-top: 1px solid #f0f0f0;
 }
 
+/* ===================================================
+   文章卡片整体可点击（仅列表页，排除详情页 .single）
+   原理：标题 <a> 的 ::after 伪元素铺满整个 article，
+   底部 footer（标签/语言链接）设更高 z-index 保持独立可点击
+   =================================================== */
+
+/* 卡片主体需要 relative 定位（仅列表页） */
+.article-wrapper:not(.single) article.default {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 标题链接的 ::after 铺满整张卡片，成为全区域点击层（仅列表页） */
+.article-wrapper:not(.single) article.default .content h1.article-title a::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+/* 底部 footer（标签、语言）需要在覆盖层之上，保持可点击（仅列表页） */
+.article-wrapper:not(.single) article.default .footer {
+    position: relative;
+    z-index: 2;
+}
+
+/* "继续阅读"链接也需要在覆盖层之上（仅列表页） */
+.article-wrapper:not(.single) article.default .content a.more {
+    position: relative;
+    z-index: 2;
+}
+
+/* 卡片 hover 效果：微微上浮 + 阴影加深（仅列表页） */
+.article-wrapper:not(.single) article.default:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ===================================================
+   文章详情页（.single）— 标题和内容不可点击
+   去掉标题链接的视觉和交互，变为纯文本展示
+   =================================================== */
+
+/* 详情页标题链接：去掉链接样式，表现为纯文本 */
+.article-wrapper.single article.default .content h1.article-title a {
+    color: inherit;
+    text-decoration: none;
+    pointer-events: none;
+    cursor: text;
+}
+
+/* 详情页 featured-image 的链接也禁用点击 */
+.article-wrapper.single article.default .featured-image a {
+    pointer-events: none;
+    cursor: default;
+}
+
 /* --- 全局链接 hover 颜色统一为橙色 --- */
 a:hover {
     color: #E8913A;
