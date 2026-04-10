@@ -36,6 +36,3 @@ showDate: false
 
 > 公众号「序员先生」—— 分享 AI 技术、投资认知、个人成长的原创内容
 
-### 技术栈
-
-本博客使用 [Hugo](https://gohugo.io/) 静态站点生成器 + [Bilberry Theme](https://github.com/Lednerb/bilberry-hugo-theme) 构建，通过 GitHub Actions 自动部署。
