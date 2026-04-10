@@ -11,7 +11,8 @@
   - HTML 正文转 Markdown（保留格式、处理知乎特有元素）
   - 下载文章图片到本地 Page Bundle 目录
   - 自动分类、打标签、生成 Front Matter
-  - 创建 Hugo Page Bundle（content/article/{slug}/index.md）
+  - 根据图片数量自动选择内容类型（article 或 gallery）
+  - 创建 Hugo Page Bundle（content/{article|gallery}/{slug}/index.md）
 
 依赖: Python 3 标准库（无额外依赖）
 """
@@ -35,8 +36,12 @@ from html.parser import HTMLParser
 # ============================================================
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-CONTENT_DIR = PROJECT_ROOT / "content" / "article"
+CONTENT_DIR_ARTICLE = PROJECT_ROOT / "content" / "article"
+CONTENT_DIR_GALLERY = PROJECT_ROOT / "content" / "gallery"
 CST = timezone(timedelta(hours=8))
+
+# 图片尺寸阈值：小于此大小(字节)的图片视为 icon，不计入正式图片
+IMG_SIZE_THRESHOLD = 5000  # 5KB
 
 logging.basicConfig(
     level=logging.INFO,
@@ -631,23 +636,67 @@ def import_article(filepath: Path, dry_run: bool = False) -> bool:
     log.info(f"  图片数: {len(image_urls)}")
 
     if dry_run:
-        log.info(f"  [DRY RUN] 将写入 content/article/{slug}/")
+        content_type = "gallery" if len(image_urls) >= 2 else "article"
+        log.info(f"  [DRY RUN] 将写入 content/{content_type}/{slug}/")
         return True
 
-    # 7. 创建 Page Bundle 目录
-    bundle_dir = CONTENT_DIR / slug
-    bundle_dir.mkdir(parents=True, exist_ok=True)
-
-    # 8. 下载图片并替换 URL
+    # 7. 下载图片到临时列表，统计正式图片数量
+    import tempfile
+    temp_dir = Path(tempfile.mkdtemp())
     img_map = {}  # original_url -> local_filename
+    img_sizes = {}  # local_filename -> file_size
     for idx, img_url in enumerate(image_urls):
         if img_url in img_map:
             continue
-        local_name = download_image(img_url, bundle_dir, idx)
+        local_name = download_image(img_url, temp_dir, idx)
         if local_name:
             img_map[img_url] = local_name
+            img_sizes[local_name] = (temp_dir / local_name).stat().st_size
         else:
-            img_map[img_url] = None  # 标记下载失败
+            img_map[img_url] = None
+
+    # 统计正式图片数（排除小于阈值的 icon 类图片）
+    real_img_count = sum(
+        1 for name, size in img_sizes.items()
+        if name and size >= IMG_SIZE_THRESHOLD
+    )
+    first_real_img = None
+    for name, size in img_sizes.items():
+        if name and size >= IMG_SIZE_THRESHOLD:
+            first_real_img = name
+            break
+
+    # 8. 根据图片数量选择内容类型
+    if real_img_count >= 2:
+        content_type = "gallery"
+        content_dir = CONTENT_DIR_GALLERY
+    else:
+        content_type = "article"
+        content_dir = CONTENT_DIR_ARTICLE
+
+    log.info(f"  内容类型: {content_type} (正式图片: {real_img_count})")
+
+    # 9. 创建 Page Bundle 目录并移动图片
+    bundle_dir = content_dir / slug
+    bundle_dir.mkdir(parents=True, exist_ok=True)
+
+    import shutil
+    for orig_url, local_name in img_map.items():
+        if local_name:
+            src = temp_dir / local_name
+            dst = bundle_dir / local_name
+            shutil.move(str(src), str(dst))
+
+    # 清理临时目录
+    shutil.rmtree(str(temp_dir), ignore_errors=True)
+
+    # 10. 为单图 article 创建 featuredImage 封面
+    if content_type == "article" and first_real_img:
+        src_img = bundle_dir / first_real_img
+        feat_img = bundle_dir / f"featuredImage{Path(first_real_img).suffix}"
+        if src_img.exists():
+            shutil.copy2(str(src_img), str(feat_img))
+            log.info(f"    📷 封面图: {feat_img.name}")
 
     # 替换 Markdown 中的图片占位符
     for orig_url, local_name in img_map.items():
@@ -655,13 +704,12 @@ def import_article(filepath: Path, dry_run: bool = False) -> bool:
         if local_name:
             markdown = markdown.replace(placeholder, local_name)
         else:
-            # 下载失败，保留原始 URL
             markdown = markdown.replace(placeholder, orig_url)
 
-    # 9. 插入 <!--more--> 分隔符
+    # 11. 插入 <!--more--> 分隔符
     markdown = insert_more_separator(markdown)
 
-    # 10. 生成摘要（在图片替换之后，确保摘要中没有占位符）
+    # 12. 生成摘要（在图片替换之后，确保摘要中没有占位符）
     plain_text = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", markdown)  # 去掉图片语法
     plain_text = re.sub(r"[#*`\[\]()!>-]", "", plain_text)
     plain_text = re.sub(r"\s+", " ", plain_text).strip()
@@ -669,9 +717,8 @@ def import_article(filepath: Path, dry_run: bool = False) -> bool:
     if len(plain_text) > 150:
         summary += "..."
 
-    # 11. 生成 Front Matter
+    # 13. 生成 Front Matter
     tags_str = ", ".join('"' + t + '"' for t in tags)
-    # 转义 summary 中的双引号
     safe_summary = summary.replace('"', '\\"')
     safe_title = title.replace('"', '\\"')
     fm_lines = [
@@ -686,16 +733,19 @@ def import_article(filepath: Path, dry_run: bool = False) -> bool:
         f'icon: "{icon}"',
         f'summary: "{safe_summary}"',
         f'zhihu_url: "{article["url"]}"',
-        "---",
     ]
+    # gallery 类型添加 imageSlider 参数
+    if content_type == "gallery":
+        fm_lines.append("imageSlider: true")
+    fm_lines.append("---")
     frontmatter = "\n".join(fm_lines)
 
-    # 12. 写入 index.md
+    # 14. 写入 index.md
     index_path = bundle_dir / "index.md"
     with open(index_path, "w", encoding="utf-8") as f:
         f.write(f"{frontmatter}\n\n{markdown}\n")
 
-    log.info(f"  ✅ 导入完成 → content/article/{slug}/")
+    log.info(f"  ✅ 导入完成 → content/{content_type}/{slug}/")
     return True
 
 
@@ -753,7 +803,8 @@ def main():
         sys.exit(1)
 
     log.info(f"📦 找到 {len(html_files)} 个知乎 HTML 文件")
-    log.info(f"📂 目标目录: {CONTENT_DIR}")
+    log.info(f"📂 文章目录: {CONTENT_DIR_ARTICLE}")
+    log.info(f"📂 图库目录: {CONTENT_DIR_GALLERY}")
 
     if args.dry_run:
         log.info("🔍 预览模式 — 不写入文件\n")
@@ -775,7 +826,8 @@ def main():
     log.info("=" * 50)
     log.info(f"📊 导入完成: 成功 {success} 篇, 失败 {failed} 篇")
     if not args.dry_run:
-        log.info(f"📂 文章目录: {CONTENT_DIR}")
+        log.info(f"📂 文章目录: {CONTENT_DIR_ARTICLE}")
+        log.info(f"📂 图库目录: {CONTENT_DIR_GALLERY}")
     log.info("✨ 全部完成")
 
 
