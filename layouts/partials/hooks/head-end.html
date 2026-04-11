@@ -1,7 +1,9 @@
 <!-- 域名规范化：plusluo.com / www.plusluo.com / www.plusluo.cn → plusluo.cn -->
+<!-- 本地开发 (localhost / 127.0.0.1) 时跳过跳转 -->
 <script>
 (function(){
   var h = location.hostname;
+  if (h === 'localhost' || h === '127.0.0.1') return;
   if (h !== 'plusluo.cn') {
     location.replace('https://plusluo.cn' + location.pathname + location.search + location.hash);
   }

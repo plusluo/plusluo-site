@@ -24,6 +24,53 @@ body.bilberry-hugo-theme,
     font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', 'Segoe UI', sans-serif !important;
 }
 
+/* ============================
+   标题 vs 正文 — 字重 + 颜色层级区分
+   标题：Medium(500) + 深色(#333)
+   正文：Regular(400) + 偏灰(#555)
+   ============================ */
+
+/* 全局 h1-h3 字重：覆盖主题 skeleton.scss 的 font-weight:300 */
+body.bilberry-hugo-theme h1,
+body.bilberry-hugo-theme h2,
+body.bilberry-hugo-theme h3 {
+    font-weight: 500 !important;
+    color: #333 !important;
+}
+
+body.bilberry-hugo-theme h4,
+body.bilberry-hugo-theme h5,
+body.bilberry-hugo-theme h6 {
+    font-weight: 400 !important;
+    color: #444 !important;
+}
+
+/* 文章主标题 h1：1.3em */
+body.bilberry-hugo-theme article .content h1.article-title {
+    font-weight: 500 !important;
+    font-size: 1.3em !important;
+    color: #2c2c2c !important;
+}
+
+/* 文章内 h2：1.15em */
+body.bilberry-hugo-theme article .content h2 {
+    font-size: 1.15em !important;
+}
+
+/* 文章内 h3：1.1em */
+body.bilberry-hugo-theme article .content h3 {
+    font-size: 1.1em !important;
+}
+
+/* 正文：常规字重 + 偏灰色，与标题拉开层级 */
+body.bilberry-hugo-theme article .content p,
+body.bilberry-hugo-theme article .content li,
+body.bilberry-hugo-theme article .content td,
+body.bilberry-hugo-theme article .content blockquote {
+    font-weight: 400 !important;
+    color: #555 !important;
+}
+
 .bilberry-hugo-theme blockquote {
     font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', 'Segoe UI', sans-serif !important;
 }
