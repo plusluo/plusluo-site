@@ -1,0 +1,11 @@
+{{ $cat := index .ctx.Params.categories 0 | default "" }}
+{{ $catSlug := $cat | urlize }}
+<a class="bubble" href="{{ printf "/categories/%s/" $catSlug | relLangURL }}">
+    <i class="fas fa-fw {{ or .ctx.Params.icon "fa-code" }}"></i>
+</a>
+
+<article class="default article">
+    {{ partial "featured-image.html" .ctx }}
+    {{ partial "default-content.html" (dict "ctx" .ctx "template_type" .template_type) }}
+    {{ partial "article-footer.html" .ctx }}
+</article>

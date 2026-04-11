@@ -1,0 +1,21 @@
+{{ $cat := index .ctx.Params.categories 0 | default "" }}
+{{ $catSlug := $cat | urlize }}
+<a class="bubble" href="{{ printf "/categories/%s/" $catSlug | relLangURL }}">
+    <i class="fas fa-fw {{ or .ctx.Params.icon "fa-quote-right" }}"></i>
+</a>
+
+<article class="quote">
+    {{ with .ctx.Params.featuredImage }}
+        <img src="{{ . }}" class="featured-image" alt="">
+    {{ end }}
+
+    <blockquote>
+        {{ .ctx.Content }}
+        {{ $urlValue := replace .ctx.Params.author " " "-" | lower}}
+        <cite>
+            <a href="{{ (print "/author/" $urlValue) | relLangURL }}">
+                {{ .ctx.Params.author }}
+            </a>
+        </cite>
+    </blockquote>
+</article>
