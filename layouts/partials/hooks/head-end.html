@@ -1,3 +1,13 @@
+<!-- 域名规范化：plusluo.com / www.plusluo.com / www.plusluo.cn → plusluo.cn -->
+<script>
+(function(){
+  var h = location.hostname;
+  if (h !== 'plusluo.cn') {
+    location.replace('https://plusluo.cn' + location.pathname + location.search + location.hash);
+  }
+})();
+</script>
+
 <!-- 关键字体资源预加载（Font Awesome 5+） -->
 <link rel="preload" href="{{ "webfonts/fa-solid-900.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ "webfonts/fa-brands-400.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
