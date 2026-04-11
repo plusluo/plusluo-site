@@ -24,9 +24,10 @@ theme = ["bilberry-hugo-theme/v4"]
   description = "序员先生的个人博客，分享 AI、技术、投资、认知的思考"
   keywords = "AI,Agent,技术博客,序员先生,plusluo,投资理财,认知成长"
 
-  # 字体配置 — 使用 Noto Sans SC（思源黑体）中英文统一风格
-  headlineFont = "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif"
-  contentFont = "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif"
+  # 字体配置 — 系统原生字体栈（零下载，各平台最佳体验）
+  # iOS/macOS → 苹方, Android → 思源黑体(Noto Sans SC), Windows → 微软雅黑
+  headlineFont = "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', 'Segoe UI', sans-serif"
+  contentFont = "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', 'Segoe UI', sans-serif"
 
   # 每页显示文章数量
   paginate = 7

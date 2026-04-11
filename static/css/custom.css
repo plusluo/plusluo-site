@@ -3,12 +3,14 @@
    =================================================== */
 
 /* ============================
-   全局字体：Noto Sans SC（思源黑体）
-   中英文风格统一，fallback 到系统中文字体
+   全局字体：系统原生字体栈（零下载）
+   iOS/macOS → 苹方 PingFang SC
+   Android   → 思源黑体 Noto Sans SC
+   Windows   → 微软雅黑 Microsoft YaHei
    ============================ */
 body.bilberry-hugo-theme,
 .bilberry-hugo-theme {
-    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', 'Segoe UI', sans-serif !important;
 }
 
 .bilberry-hugo-theme .title,
@@ -19,11 +21,11 @@ body.bilberry-hugo-theme,
 .bilberry-hugo-theme h4,
 .bilberry-hugo-theme h5,
 .bilberry-hugo-theme h6 {
-    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', 'Segoe UI', sans-serif !important;
 }
 
 .bilberry-hugo-theme blockquote {
-    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', 'Segoe UI', sans-serif !important;
 }
 
 /* 代码字体保持 Fira Code 不变 */
