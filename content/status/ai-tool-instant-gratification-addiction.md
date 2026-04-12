@@ -8,9 +8,8 @@ author: "plusluo"
 toc: false
 icon: "fa-comment-dots"
 summary: "AI 工具带来的即时满足感太强，人很容易在它短暂空闲时又忍不住继续布置任务，逐渐形成一种隐性的依赖与上瘾。"
+featuredImage: "/images/status/ai-tool-instant-gratification-addiction.jpg"
 ---
-
-![](/images/status/ai-tool-instant-gratification-addiction.jpg)
 
 AI 工具的即时满足感太强，很容易上瘾。
 
