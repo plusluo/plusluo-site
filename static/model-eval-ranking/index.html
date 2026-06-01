@@ -248,18 +248,29 @@
       const max = Math.max(...values, 1);
       const min = Math.min(...values, max);
       const spread = max - min;
-      const closeCluster = valid.length >= 3 && spread > 0 && spread / max <= 0.18;
+      const spreadRatio = spread / max;
+      const minRatio = min / max;
+
+      function visualHeight(value) {
+        if (spread <= 0 || valid.length < 3) return Math.max(4, (value / max) * 100);
+
+        let floor = null;
+        if (spreadRatio <= 0.18) {
+          floor = 36;
+        } else if (spreadRatio <= 0.35) {
+          floor = 24;
+        } else if (minRatio >= 0.45 && spread <= 35) {
+          floor = 16;
+        }
+
+        if (floor === null) return Math.max(4, (value / max) * 100);
+
+        const normalized = (value - min) / spread;
+        return floor + normalized * (100 - floor);
+      }
 
       return scores.map((s, index) => {
-        let height = 0;
-        if (s.v !== null) {
-          if (closeCluster) {
-            const normalized = (s.v - min) / spread;
-            height = 42 + normalized * 58;
-          } else {
-            height = Math.max(4, (s.v / max) * 100);
-          }
-        }
+        const height = s.v === null ? 0 : visualHeight(s.v);
         const color = modelColors[s.m] || "#64748b";
         const rankText = s.v === null ? "未给分" : `第 ${index + 1} 名`;
         return `<div class="bar-col ${s.v === null ? "missing" : ""}" title="${s.m} · ${s.d} · ${rankText}" style="--h:${height}; --model-color:${color}">
@@ -291,7 +302,7 @@
           </div>
           <p class="comment"><b>一句话点评：</b>${item.comment}</p>
           <div class="chart-wrap">
-            <div class="chart-title"><span>截图分数排名柱状图</span><span>分数接近时自动放大局部差异，柱顶保留原始分数</span></div>
+            <div class="chart-title"><span>截图分数排名柱状图</span><span>排名差异视觉增强，柱顶保留原始分数</span></div>
             <div class="chart-scroll"><div class="bars" style="--count:${item.scores.length}">${renderBars(item.scores)}</div></div>
           </div>
         </article>`;
