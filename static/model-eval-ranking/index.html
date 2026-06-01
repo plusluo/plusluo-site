@@ -104,20 +104,21 @@
     .chart-scroll { overflow-x: auto; padding-bottom: 2px; }
     .bars {
       min-width: 760px;
-      height: 250px;
-      padding: 10px 8px 0;
+      height: 280px;
+      padding: 12px 10px 0;
       display: grid;
       grid-template-columns: repeat(var(--count), minmax(58px, 1fr));
       gap: 10px;
-      align-items: end;
+      align-items: stretch;
       border-radius: 22px;
       background:
         linear-gradient(to top, rgba(148,163,184,.16) 1px, transparent 1px) 0 0/100% 25%,
         linear-gradient(180deg, #fbfdff, #f8fafc);
       border: 1px solid var(--line);
     }
-    .bar-col { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 8px; min-width: 0; }
-    .bar-value { font-size: 12px; font-weight: 900; color: #233047; white-space: nowrap; }
+    .bar-col { height: 100%; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; min-height: 0; }
+    .bar-value { font-size: 12px; font-weight: 900; color: #233047; white-space: nowrap; flex: 0 0 auto; }
+    .bar-track { flex: 1 1 auto; width: 100%; min-height: 0; display: flex; justify-content: center; align-items: flex-end; }
     .bar {
       width: 100%;
       max-width: 42px;
@@ -129,7 +130,7 @@
       transition: .2s ease;
     }
     .bar-col:hover .bar { transform: translateY(-4px); filter: saturate(1.15); }
-    .model { min-height: 38px; color: #475569; font-size: 11px; line-height: 1.15; text-align: center; overflow-wrap: anywhere; }
+    .model { min-height: 38px; color: #475569; font-size: 11px; line-height: 1.15; text-align: center; overflow-wrap: anywhere; flex: 0 0 auto; }
     .missing { opacity: .34; }
     .missing .bar { height: 4px; background: #cbd5e1; box-shadow: none; }
     .missing .bar-value { color: #94a3b8; }
@@ -275,7 +276,7 @@
         const rankText = s.v === null ? "未给分" : `第 ${index + 1} 名`;
         return `<div class="bar-col ${s.v === null ? "missing" : ""}" title="${s.m} · ${s.d} · ${rankText}" style="--h:${height}; --model-color:${color}">
           <div class="bar-value">${s.d}</div>
-          <div class="bar"></div>
+          <div class="bar-track"><div class="bar"></div></div>
           <div class="model">${s.m}</div>
         </div>`;
       }).join("");
