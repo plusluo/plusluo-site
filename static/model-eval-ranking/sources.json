@@ -1,0 +1,302 @@
+{
+  "_comment": "作者: plusluo / 32 个评测项的官方数据来源。verified=true 表示官方主页已通过搜索确认；vendor-internal=true 表示该评测主要在厂家发布报告中出现，公开榜单不一定有",
+  "lastUpdated": "2026-06-01",
+  "benchmarks": [
+    {
+      "name": "SWE-Bench Verified",
+      "category": "Coding",
+      "officialUrl": "https://www.swebench.com/",
+      "leaderboardUrl": "https://www.swebench.com/#verified",
+      "paper": "https://arxiv.org/abs/2310.06770",
+      "owner": "Princeton + OpenAI",
+      "verified": true
+    },
+    {
+      "name": "SWE-Bench Pro",
+      "category": "Coding",
+      "officialUrl": "https://www.swebench.com/",
+      "leaderboardUrl": "https://www.swebench.com/multimodal.html",
+      "owner": "SWE-bench team",
+      "verified": true
+    },
+    {
+      "name": "Terminal-Bench 2.0",
+      "category": "Coding",
+      "officialUrl": "https://www.tbench.ai/",
+      "paper": "https://arxiv.org/abs/2601.11868",
+      "githubUrl": "https://github.com/harbor-framework/terminal-bench-2",
+      "owner": "Stanford / Harbor Framework",
+      "verified": true
+    },
+    {
+      "name": "SWE-Calibr-QA",
+      "category": "Coding",
+      "officialUrl": null,
+      "vendorInternal": true,
+      "verified": false,
+      "notes": "数据出自 MiniMax-M3 发布报告，疑似与 SWE 系列校准 QA 评测相关；公开榜单暂未确认"
+    },
+    {
+      "name": "NL2Repo",
+      "category": "Coding",
+      "officialUrl": null,
+      "vendorInternal": true,
+      "verified": false,
+      "notes": "数据出自厂家发布报告；后续需在 GitHub / arXiv 上反查具体出处"
+    },
+    {
+      "name": "SWE-Atlas-Test Writing",
+      "category": "Coding",
+      "officialUrl": null,
+      "vendorInternal": true,
+      "verified": false,
+      "notes": "厂家在发布报告中提到的 SWE 测试编写子项"
+    },
+    {
+      "name": "SciCode-Efficiency",
+      "category": "Coding",
+      "officialUrl": "https://scicode-bench.github.io/",
+      "githubUrl": "https://github.com/scicode-bench/SciCode",
+      "paper": "https://arxiv.org/abs/2407.13168",
+      "owner": "SciCode 团队 (UChicago + 多机构)",
+      "verified": true,
+      "notes": "Efficiency 维度通常需要查 SciCode 官方/扩展榜单"
+    },
+    {
+      "name": "LiveSQLBench",
+      "category": "Coding",
+      "officialUrl": "https://github.com/bird-bench/livesqlbench",
+      "owner": "BIRD-bench (HKUST + 港大)",
+      "verified": true
+    },
+    {
+      "name": "CI-Bench",
+      "category": "Coding",
+      "officialUrl": null,
+      "vendorInternal": true,
+      "verified": false,
+      "notes": "持续集成失败修复评测；公开榜单未确认"
+    },
+    {
+      "name": "Vibe Code Bench / VIBE",
+      "category": "Coding",
+      "officialUrl": "https://vibench.ai/",
+      "alternateUrl": "https://www.vals.ai/benchmarks/vibe-code",
+      "owner": "ViBench 团队",
+      "verified": true,
+      "notes": "存在多个名称相近评测：vibench.ai 是端到端 web 应用评测，vals.ai 上有 Vibe Code Bench v1.1"
+    },
+    {
+      "name": "SVG-Bench",
+      "category": "Coding",
+      "officialUrl": "https://svgbench.ai/",
+      "githubUrl": "https://github.com/johnbean393/SVGBench",
+      "verified": true
+    },
+    {
+      "name": "PostTrainBench",
+      "category": "Coding",
+      "officialUrl": null,
+      "vendorInternal": true,
+      "verified": false,
+      "notes": "大模型后训练自动化评测；疑似厂家内部评测"
+    },
+    {
+      "name": "KernelBench-Hard",
+      "category": "Coding",
+      "officialUrl": "https://kernelbench.com/hard",
+      "githubUrl": "https://github.com/Infatoshi/KernelBench-Hard",
+      "verified": true
+    },
+    {
+      "name": "PaperBench",
+      "category": "Coding",
+      "officialUrl": "https://github.com/openai/frontier-evals/tree/main/project/paperbench",
+      "paper": "https://arxiv.org/abs/2504.01848",
+      "owner": "OpenAI",
+      "verified": true
+    },
+    {
+      "name": "BrowseComp",
+      "category": "Computer Agent",
+      "officialUrl": "https://openai.com/index/browsecomp/",
+      "paper": "https://arxiv.org/abs/2504.12516",
+      "owner": "OpenAI",
+      "verified": true
+    },
+    {
+      "name": "DABench / DA-Bench",
+      "category": "Computer Agent",
+      "officialUrl": "https://infiagent.github.io/",
+      "githubUrl": "https://github.com/InfiAgent/InfiAgent",
+      "paper": "https://arxiv.org/abs/2401.05507",
+      "owner": "InfiAgent",
+      "verified": true
+    },
+    {
+      "name": "GPQA Robotics",
+      "category": "Computer Agent",
+      "officialUrl": "https://github.com/idavidrein/gpqa",
+      "paper": "https://arxiv.org/abs/2311.12022",
+      "verified": true,
+      "notes": "GPQA 总榜+机器人学科子集；Robotics 切分通常出现在厂家发布报告里"
+    },
+    {
+      "name": "BrowseToolBench",
+      "category": "Computer Agent",
+      "officialUrl": null,
+      "vendorInternal": true,
+      "verified": false
+    },
+    {
+      "name": "OfficeQA Pro",
+      "category": "Computer Agent",
+      "officialUrl": null,
+      "vendorInternal": true,
+      "verified": false
+    },
+    {
+      "name": "SpreadsheetBench-v1",
+      "category": "Computer Agent",
+      "officialUrl": "https://github.com/RUCKBReasoning/SpreadsheetBench",
+      "paper": "https://arxiv.org/abs/2406.14991",
+      "leaderboardUrl": "https://llm-stats.com/benchmarks/spreadsheetbench-v1",
+      "owner": "中国人民大学 KB Reasoning",
+      "verified": true
+    },
+    {
+      "name": "YC-Bench",
+      "category": "Computer Agent",
+      "officialUrl": null,
+      "vendorInternal": true,
+      "verified": false,
+      "notes": "长周期创业经营智能体评测，疑似厂家自建"
+    },
+    {
+      "name": "LOCA-Bench (256k)",
+      "category": "Computer Agent",
+      "officialUrl": null,
+      "vendorInternal": true,
+      "verified": false,
+      "notes": "长上下文 Agent 评测，厂家自建概率较高"
+    },
+    {
+      "name": "MCP-Atlas",
+      "category": "Computer Agent",
+      "officialUrl": null,
+      "vendorInternal": true,
+      "verified": false,
+      "notes": "MCP 工具使用评测；MiniMax 内部评测概率高"
+    },
+    {
+      "name": "Apex-Agents",
+      "category": "Computer Agent",
+      "officialUrl": null,
+      "vendorInternal": true,
+      "verified": false,
+      "notes": "专业服务长程 Agent 评测；MiniMax 发布报告中提及"
+    },
+    {
+      "name": "CUA-Eval",
+      "category": "Computer Agent",
+      "officialUrl": null,
+      "vendorInternal": true,
+      "verified": false,
+      "notes": "Computer-Use Agent 评测；公开来源未确认"
+    },
+    {
+      "name": "OSWorld-Verified",
+      "category": "GUI",
+      "officialUrl": "https://os-world.github.io/",
+      "githubUrl": "https://github.com/xlang-ai/OSWorld",
+      "blogUrl": "https://xlang.ai/blog/osworld-verified",
+      "owner": "XLANG Lab",
+      "verified": true
+    },
+    {
+      "name": "OmniDocBench",
+      "category": "Multimodal",
+      "officialUrl": "https://github.com/opendatalab/OmniDocBench",
+      "owner": "OpenDataLab",
+      "verified": true,
+      "notes": "CVPR 2025"
+    },
+    {
+      "name": "MMMU-Pro",
+      "category": "Multimodal",
+      "officialUrl": "https://mmmu-benchmark.github.io/",
+      "githubUrl": "https://github.com/MMMU-Benchmark/MMMU",
+      "datasetUrl": "https://huggingface.co/datasets/MMMU/MMMU_Pro",
+      "verified": true
+    },
+    {
+      "name": "Video-MMMU",
+      "category": "Multimodal",
+      "officialUrl": "https://videommmu.github.io/",
+      "githubUrl": "https://github.com/EvolvingLMMs-Lab/VideoMMMU",
+      "verified": true
+    },
+    {
+      "name": "VideoMME (w/o subs)",
+      "category": "Multimodal",
+      "officialUrl": "https://video-mme.github.io/",
+      "verified": true
+    },
+    {
+      "name": "IMO 2025",
+      "category": "Reasoning",
+      "officialUrl": "https://www.imo-official.org/",
+      "verified": true,
+      "notes": "竞赛题目本身来自 IMO 官方；分数来自厂家提交答案后人工/自动评分"
+    },
+    {
+      "name": "USAMO 2025",
+      "category": "Reasoning",
+      "officialUrl": "https://maa.org/maa-invitational-competitions",
+      "verified": true,
+      "notes": "竞赛题目来自 MAA 官方；分数来自厂家提交答案后评分"
+    }
+  ],
+  "vendorReleasePages": [
+    {
+      "vendor": "Anthropic",
+      "releaseUrl": "https://www.anthropic.com/news",
+      "modelCardUrl": "https://www.anthropic.com/claude"
+    },
+    {
+      "vendor": "OpenAI",
+      "releaseUrl": "https://openai.com/news/",
+      "modelCardUrl": "https://platform.openai.com/docs/models"
+    },
+    {
+      "vendor": "Google",
+      "releaseUrl": "https://blog.google/technology/google-deepmind/",
+      "modelCardUrl": "https://deepmind.google/models/gemini/"
+    },
+    {
+      "vendor": "MiniMax",
+      "releaseUrl": "https://www.minimax.io/news",
+      "modelCardUrl": "https://www.minimax.io/platform"
+    },
+    {
+      "vendor": "DeepSeek",
+      "releaseUrl": "https://api-docs.deepseek.com/news/news",
+      "modelCardUrl": "https://www.deepseek.com/"
+    },
+    {
+      "vendor": "Zhipu (GLM)",
+      "releaseUrl": "https://www.zhipuai.cn/news",
+      "modelCardUrl": "https://open.bigmodel.cn/dev/api"
+    },
+    {
+      "vendor": "Moonshot (Kimi)",
+      "releaseUrl": "https://platform.moonshot.cn/blog",
+      "modelCardUrl": "https://platform.moonshot.cn/docs"
+    },
+    {
+      "vendor": "Tencent (混元)",
+      "releaseUrl": "https://hunyuan.tencent.com/news",
+      "modelCardUrl": "https://hunyuan.tencent.com/modelSquare"
+    }
+  ]
+}

@@ -58,6 +58,25 @@
       background: linear-gradient(135deg, rgba(73,103,255,.08), rgba(124,58,237,.06));
     }
     .eyebrow { color: var(--primary); font-weight: 800; letter-spacing: .08em; font-size: 13px; text-transform: uppercase; }
+    .version-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+    .version-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+    .badge { display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; line-height: 1; border: 1px solid transparent; }
+    .badge-version { color: #fff; background: linear-gradient(135deg, var(--primary), var(--primary-2)); box-shadow: 0 6px 14px rgba(73,103,255,.25); }
+    .badge-meta { color: #475569; background: rgba(255,255,255,.85); border-color: var(--line); }
+    .snapshot { margin-top: 20px; padding: 16px 18px; border-radius: 18px; background: rgba(255,255,255,.78); border: 1px solid var(--line); }
+    .snapshot-title { color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .04em; margin-bottom: 10px; }
+    .snapshot-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .vendor-tag { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #1e293b; background: #f1f5fb; border: 1px solid var(--line); }
+    .vendor-tag[data-v="anthropic"] { background: rgba(249,115,22,.10); border-color: rgba(249,115,22,.25); color: #b45309; }
+    .vendor-tag[data-v="openai"] { background: rgba(16,185,129,.10); border-color: rgba(16,185,129,.25); color: #047857; }
+    .vendor-tag[data-v="google"] { background: rgba(14,165,233,.10); border-color: rgba(14,165,233,.25); color: #0369a1; }
+    .vendor-tag[data-v="minimax"] { background: rgba(73,103,255,.10); border-color: rgba(73,103,255,.25); color: #2730d4; }
+    .vendor-tag[data-v="deepseek"] { background: rgba(239,68,68,.10); border-color: rgba(239,68,68,.25); color: #b91c1c; }
+    .vendor-tag[data-v="zhipu"] { background: rgba(20,184,166,.10); border-color: rgba(20,184,166,.25); color: #0f766e; }
+    .vendor-tag[data-v="moonshot"] { background: rgba(168,85,247,.10); border-color: rgba(168,85,247,.25); color: #6b21a8; }
+    .snapshot-meta { margin-top: 10px; color: var(--muted); font-size: 12.5px; line-height: 1.7; }
+    .snapshot-meta a { color: var(--primary); text-decoration: none; border-bottom: 1px dashed currentColor; }
+    .snapshot-meta a:hover { color: var(--primary-2); }
     h1 { margin: 12px 0 12px; font-size: clamp(30px, 5vw, 54px); line-height: 1.05; letter-spacing: -0.04em; }
     .intro { max-width: 860px; margin: 0; color: #334155; font-size: 17px; line-height: 1.78; }
     .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
@@ -149,20 +168,42 @@
 <body>
   <main class="page">
     <section class="hero">
-      <div class="eyebrow">LLM Benchmark Visual Report</div>
+      <div class="version-row">
+        <div class="eyebrow">LLM Benchmark Visual Report</div>
+        <div class="version-badges">
+          <span class="badge badge-version">版本 v1.0</span>
+          <span class="badge badge-meta">模型快照 2026-04-12</span>
+          <span class="badge badge-meta">最后更新 2026-06-01</span>
+        </div>
+      </div>
       <h1>大模型能力评测分数排名可视化</h1>
       <p class="intro"><b>9 个主流大模型在 32 个评测项上的横向对比。</b>覆盖 Coding、Computer Agent、GUI、Multimodal、Reasoning 五大能力维度。整体格局上：Claude Opus 4.7 在真实软件工程、复杂代码生成与长程专业 Agent 上多次领先；GPT-5.5 在终端任务、测试编写、视频理解等工程化与多模态项目突出；Gemini 3.0 Pro 在数学奥赛与部分高难专业问答上拿下高分；MiniMax-M3 在文档解析、桌面操作 Agent、长上下文与多个 Coding 项目稳居头部梯队。每个评测项还附中文释义、考察能力、一句话点评与按分数排序的可视化柱状图。</p>
       <div class="stats">
         <div class="stat"><strong id="benchCount">-</strong><span>评测项</span></div>
         <div class="stat"><strong>9</strong><span>截图模型列</span></div>
         <div class="stat"><strong>5</strong><span>能力分类</span></div>
-        <div class="stat"><strong>100%</strong><span>本地单文件打开</span></div>
+        <div class="stat"><strong>8</strong><span>关注厂家</span></div>
+      </div>
+      <div class="snapshot">
+        <div class="snapshot-title">本版本模型清单</div>
+        <div class="snapshot-list">
+          <span class="vendor-tag" data-v="anthropic">Anthropic · Claude Opus 4.7</span>
+          <span class="vendor-tag" data-v="anthropic">Anthropic · Claude Sonnet 4.5</span>
+          <span class="vendor-tag" data-v="openai">OpenAI · GPT-5.5</span>
+          <span class="vendor-tag" data-v="google">Google · Gemini 3.0 Pro</span>
+          <span class="vendor-tag" data-v="minimax">MiniMax · MiniMax-M3</span>
+          <span class="vendor-tag" data-v="minimax">MiniMax · MiniMax-M2.7</span>
+          <span class="vendor-tag" data-v="deepseek">DeepSeek · DeepSeek V4 Pro</span>
+          <span class="vendor-tag" data-v="zhipu">Zhipu · GLM Thinking</span>
+          <span class="vendor-tag" data-v="moonshot">Moonshot · Kimi K2.6 Thinking</span>
+        </div>
+        <div class="snapshot-meta">关注厂家：Claude / Gemini / GPT / MiniMax / Kimi / 混元 / DeepSeek / GLM。<br />更新策略：Claude 保留最近 2 个版本，其他厂家仅保留当前最新模型。<br />配套文件：<a href="version.json">version.json</a> · <a href="sources.json">sources.json</a> · <a href="CHANGELOG.md">CHANGELOG.md</a></div>
       </div>
     </section>
 
     <nav class="toolbar" id="filters" aria-label="分类筛选"></nav>
     <section class="grid" id="cards"></section>
-    <footer>作者：plusluo · 数据来源：用户提供截图整理 · 单文件离线页面</footer>
+    <footer>作者：plusluo · 版本 v1.0（快照 2026-04-12） · 数据来源见 sources.json · 单文件离线页面</footer>
   </main>
 
   <script>

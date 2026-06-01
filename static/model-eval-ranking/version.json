@@ -1,0 +1,53 @@
+{
+  "_comment": "作者: plusluo / 大模型能力评测分数排名可视化页面 - 版本元数据",
+  "currentVersion": "1.0",
+  "snapshotDate": "2026-04-12",
+  "lastUpdated": "2026-06-01",
+  "dataSourceNote": "数据来源：MiniMax-M3 发布技术报告（2026-04 整理）以及各评测官方榜单",
+  "focusedVendors": [
+    "Anthropic (Claude)",
+    "Google (Gemini)",
+    "OpenAI (GPT)",
+    "MiniMax",
+    "Moonshot (Kimi)",
+    "Tencent (混元/Hunyuan)",
+    "DeepSeek",
+    "Zhipu (GLM)"
+  ],
+  "vendorRetentionPolicy": {
+    "Anthropic (Claude)": {
+      "keepLatestN": 2,
+      "reason": "用户明确指定 Claude 保留最近 2 个版本"
+    },
+    "_default": {
+      "keepLatestN": 1,
+      "reason": "其他厂家只保留当前能拿到的最新模型版本数据"
+    }
+  },
+  "models": [
+    { "vendor": "Anthropic", "name": "Claude Opus 4.7", "tier": "flagship" },
+    { "vendor": "Anthropic", "name": "Claude Sonnet 4.5", "tier": "previous-flagship" },
+    { "vendor": "OpenAI", "name": "GPT-5.5", "tier": "flagship" },
+    { "vendor": "Google", "name": "Gemini 3.0 Pro", "tier": "flagship" },
+    { "vendor": "MiniMax", "name": "MiniMax-M3", "tier": "flagship" },
+    { "vendor": "MiniMax", "name": "MiniMax-M2.7", "tier": "previous (待精简)" },
+    { "vendor": "DeepSeek", "name": "DeepSeek V4 Pro", "tier": "flagship" },
+    { "vendor": "Zhipu", "name": "GLM Thinking", "tier": "flagship" },
+    { "vendor": "Moonshot", "name": "Kimi K2.6 Thinking", "tier": "flagship" }
+  ],
+  "missingVendors": [
+    {
+      "vendor": "Tencent (混元/Hunyuan)",
+      "note": "当前数据中暂无混元数据，下一次更新时若官方榜单出现需补齐"
+    }
+  ],
+  "history": [
+    {
+      "version": "1.0",
+      "date": "2026-04-12",
+      "summary": "首次整理：基于 MiniMax-M3 发布技术报告 + 各评测公开榜单，整理 32 个评测项 × 9 个模型的横向对比",
+      "benchmarkCount": 32,
+      "categories": ["Coding", "Computer Agent", "GUI", "Multimodal", "Reasoning"]
+    }
+  ]
+}
