@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="plusluo" />
+  <title>大模型能力评测分数排名可视化</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: rgba(255, 255, 255, 0.88);
+      --text: #172033;
+      --muted: #64748b;
+      --line: #e6edf5;
+      --primary: #4967ff;
+      --primary-2: #7c3aed;
+      --cyan: #0ea5e9;
+      --green: #10b981;
+      --orange: #f59e0b;
+      --rose: #f43f5e;
+      --shadow: 0 20px 60px rgba(30, 41, 59, 0.12);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 8% 8%, rgba(73, 103, 255, 0.18), transparent 28%),
+        radial-gradient(circle at 92% 0%, rgba(14, 165, 233, 0.18), transparent 26%),
+        linear-gradient(180deg, #f8fbff 0%, var(--bg) 58%, #eef4fb 100%);
+      min-height: 100vh;
+    }
+
+    .page { width: min(1200px, calc(100% - 32px)); margin: 0 auto; padding: 34px 0 60px; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 34px;
+      border: 1px solid rgba(255,255,255,0.72);
+      border-radius: 32px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,255,255,0.7)),
+        linear-gradient(120deg, rgba(73,103,255,0.14), rgba(14,165,233,0.12));
+      box-shadow: var(--shadow);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      right: -90px;
+      top: -120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(73,103,255,.2), rgba(124,58,237,.15));
+    }
+    .eyebrow { color: var(--primary); font-weight: 800; letter-spacing: .08em; font-size: 13px; text-transform: uppercase; }
+    h1 { margin: 12px 0 12px; font-size: clamp(30px, 5vw, 54px); line-height: 1.05; letter-spacing: -0.04em; }
+    .intro { max-width: 860px; margin: 0; color: #334155; font-size: 17px; line-height: 1.78; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+    .stat { padding: 16px; border-radius: 20px; background: rgba(255,255,255,.72); border: 1px solid var(--line); }
+    .stat strong { display:block; font-size: 25px; color: var(--text); }
+    .stat span { color: var(--muted); font-size: 13px; }
+
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 28px 0 20px; }
+    .chip {
+      appearance: none;
+      border: 1px solid var(--line);
+      color: #334155;
+      background: rgba(255,255,255,.82);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .18s ease;
+    }
+    .chip:hover, .chip.active { color: white; border-color: transparent; background: linear-gradient(135deg, var(--primary), var(--primary-2)); box-shadow: 0 10px 24px rgba(73,103,255,.22); }
+
+    .grid { display: grid; gap: 22px; }
+    .card {
+      border: 1px solid rgba(226,232,240,.95);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: 0 16px 44px rgba(15,23,42,.08);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    .card-head { display: flex; justify-content: space-between; gap: 18px; padding: 24px 24px 10px; align-items: flex-start; }
+    .title-wrap h2 { margin: 0; font-size: 24px; letter-spacing: -0.02em; }
+    .category { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 10px; padding: 6px 10px; border-radius: 999px; color: #fff; background: var(--cat-color); font-size: 12px; font-weight: 800; }
+    .rank-badge { flex: 0 0 auto; padding: 10px 12px; border-radius: 16px; background: #f8fafc; border: 1px solid var(--line); color: #334155; font-size: 13px; font-weight: 800; }
+    .info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 8px 24px 18px; }
+    .info-item { padding: 14px; border-radius: 18px; background: #f8fafc; border: 1px solid var(--line); }
+    .label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .04em; }
+    .value { color: #243044; line-height: 1.65; font-size: 14px; }
+    .comment { margin: 0 24px 20px; padding: 14px 16px; border-radius: 18px; background: linear-gradient(135deg, rgba(73,103,255,.09), rgba(14,165,233,.08)); border: 1px solid rgba(73,103,255,.12); color: #26324a; line-height: 1.72; }
+    .comment b { color: var(--primary); }
+
+    .chart-wrap { padding: 4px 18px 22px; }
+    .chart-title { display:flex; justify-content: space-between; gap: 12px; align-items:center; padding: 0 6px 12px; color: var(--muted); font-size: 13px; font-weight: 700; }
+    .chart-scroll { overflow-x: auto; padding-bottom: 2px; }
+    .bars {
+      min-width: 760px;
+      height: 250px;
+      padding: 10px 8px 0;
+      display: grid;
+      grid-template-columns: repeat(var(--count), minmax(58px, 1fr));
+      gap: 10px;
+      align-items: end;
+      border-radius: 22px;
+      background:
+        linear-gradient(to top, rgba(148,163,184,.16) 1px, transparent 1px) 0 0/100% 25%,
+        linear-gradient(180deg, #fbfdff, #f8fafc);
+      border: 1px solid var(--line);
+    }
+    .bar-col { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 8px; min-width: 0; }
+    .bar-value { font-size: 12px; font-weight: 900; color: #233047; white-space: nowrap; }
+    .bar {
+      width: 100%;
+      max-width: 42px;
+      min-height: 4px;
+      height: calc(var(--h) * 1%);
+      border-radius: 12px 12px 5px 5px;
+      background: linear-gradient(180deg, var(--model-color), color-mix(in srgb, var(--model-color) 72%, #172033));
+      box-shadow: 0 10px 22px color-mix(in srgb, var(--model-color) 24%, transparent);
+      transition: .2s ease;
+    }
+    .bar-col:hover .bar { transform: translateY(-4px); filter: saturate(1.15); }
+    .model { min-height: 38px; color: #475569; font-size: 11px; line-height: 1.15; text-align: center; overflow-wrap: anywhere; }
+    .missing { opacity: .34; }
+    .missing .bar { height: 4px; background: #cbd5e1; box-shadow: none; }
+    .missing .bar-value { color: #94a3b8; }
+
+    footer { margin-top: 28px; color: var(--muted); text-align: center; font-size: 13px; }
+    @media (max-width: 760px) {
+      .page { width: min(100% - 20px, 1200px); padding-top: 14px; }
+      .hero { padding: 24px; border-radius: 26px; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .card-head { flex-direction: column; }
+      .info { grid-template-columns: 1fr; }
+      .bars { min-width: 680px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">LLM Benchmark Visual Report</div>
+      <h1>大模型能力评测分数排名可视化</h1>
+      <p class="intro"><b>按评测项展开：中文说明 + 截图分数排名。</b>本页面将截图中的评测内容整理为 H5 卡片：每个评测项保留中文含义、主要考察能力、简单理解与一句话点评，并将各模型分数转换为等比例柱状图，便于快速观察头部模型差距与梯队分布。柱状图按每个评测项内最高有效分归一化显示，柱顶保留原始截图分数。</p>
+      <div class="stats">
+        <div class="stat"><strong id="benchCount">-</strong><span>评测项</span></div>
+        <div class="stat"><strong>9</strong><span>截图模型列</span></div>
+        <div class="stat"><strong>5</strong><span>能力分类</span></div>
+        <div class="stat"><strong>100%</strong><span>本地单文件打开</span></div>
+      </div>
+    </section>
+
+    <nav class="toolbar" id="filters" aria-label="分类筛选"></nav>
+    <section class="grid" id="cards"></section>
+    <footer>作者：plusluo · 数据来源：用户提供截图整理 · 单文件离线页面</footer>
+  </main>
+
+  <script>
+    const modelColors = {
+      "MiniMax-M3": "#4967ff",
+      "MiniMax-M2.7": "#8b5cf6",
+      "Claude Opus 4.7": "#f97316",
+      "GPT-5.5": "#10b981",
+      "Gemini 3.0 Pro": "#0ea5e9",
+      "Claude Sonnet 4.5": "#f59e0b",
+      "DeepSeek V4 Pro": "#ef4444",
+      "GLM Thinking": "#14b8a6",
+      "Kimi K2.6 Thinking": "#a855f7"
+    };
+
+    const categoryColors = {
+      "Coding": "#4967ff",
+      "Computer Agent": "#0ea5e9",
+      "GUI": "#10b981",
+      "Multimodal": "#f59e0b",
+      "Reasoning": "#a855f7"
+    };
+
+    const benchmarks = [
+      { category: "Coding", name: "SWE-Bench Verified", meaning: "真实软件工程问题修复评测（人工校验子集）", ability: "代码仓库理解、Bug 定位、补丁生成、测试通过", simple: "给模型一个真实 GitHub issue，让它改代码修好问题。", comment: "Claude Opus 4.7 明显领先，第二梯队集中在 80～83 分，MiniMax-M3 与 Gemini/DeepSeek 基本只差 0.1 分。", scores: [{m:"Claude Opus 4.7",v:87.6,d:"87.6"},{m:"GPT-5.5",v:82.9,d:"82.9"},{m:"Gemini 3.0 Pro",v:80.6,d:"80.6"},{m:"DeepSeek V4 Pro",v:80.6,d:"80.6"},{m:"MiniMax-M3",v:80.5,d:"80.5"},{m:"Kimi K2.6 Thinking",v:80.2,d:"80.2"},{m:"MiniMax-M2.7",v:79.9,d:"79.9"},{m:"Claude Sonnet 4.5",v:79.6,d:"79.6"},{m:"GLM Thinking",v:null,d:"-"}] },
+      { category: "Coding", name: "SWE-Bench Pro", meaning: "更高难度真实软件工程问题评测", ability: "长周期代码修改、多文件变更、复杂工程调试", simple: "比 SWE-Bench Verified 更难，更接近资深工程师处理复杂缺陷/需求。", comment: "Claude Opus 4.7 拉开约 5 分优势，MiniMax-M3、GPT-5.5、Kimi 和 GLM 处在非常接近的第二梯队。", scores: [{m:"Claude Opus 4.7",v:64.3,d:"64.3"},{m:"MiniMax-M3",v:59.0,d:"59.0"},{m:"GPT-5.5",v:58.6,d:"58.6"},{m:"Kimi K2.6 Thinking",v:58.6,d:"58.6"},{m:"GLM Thinking",v:58.4,d:"58.4"},{m:"MiniMax-M2.7",v:56.2,d:"56.2"},{m:"Gemini 3.0 Pro",v:54.2,d:"54.2"},{m:"DeepSeek V4 Pro",v:53.4,d:"53.4"},{m:"Claude Sonnet 4.5",v:null,d:"-"}] },
+      { category: "Coding", name: "Terminal-Bench 2.0", meaning: "终端环境任务评测", ability: "命令行操作、工具调用、调试、数据处理、工程执行", simple: "让模型在真实 shell/终端里完成一系列任务。", comment: "GPT-5.5 在终端任务上优势最明显，MiniMax-M3 与 Claude Opus 4.7 几乎持平，属于第三梯队顶部。", scores: [{m:"GPT-5.5",v:78.2,d:"78.2"},{m:"Gemini 3.0 Pro",v:70.3,d:"70.3"},{m:"Claude Opus 4.7",v:66.1,d:"66.1"},{m:"MiniMax-M3",v:66.0,d:"66.0"},{m:"DeepSeek V4 Pro",v:59.6,d:"59.6"},{m:"Kimi K2.6 Thinking",v:53.9,d:"53.9"},{m:"MiniMax-M2.7",v:53.3,d:"53.3"},{m:"GLM Thinking",v:46.3,d:"46.3"},{m:"Claude Sonnet 4.5",v:null,d:"-"}] },
+      { category: "Coding", name: "SWE-Calibr-QA", meaning: "软件工程校准问答评测", ability: "仓库级代码问答、事实定位、答案可靠性", simple: "考模型是否能基于代码仓库准确回答工程问题。", comment: "GPT-5.5 与 Claude Opus 4.7 基本并列第一，MiniMax-M3 落后约 7 分但明显强于后续模型。", scores: [{m:"GPT-5.5",v:45.4,d:"45.4"},{m:"Claude Opus 4.7",v:45.2,d:"45.2"},{m:"MiniMax-M3",v:37.9,d:"37.9"},{m:"Claude Sonnet 4.5",v:31.2,d:"31.2"},{m:"Gemini 3.0 Pro",v:13.5,d:"13.5"},{m:"MiniMax-M2.7",v:11.3,d:"11.3"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Coding", name: "NL2Repo", meaning: "自然语言到代码仓库生成评测", ability: "需求理解、项目搭建、多文件代码生成、依赖组织", simple: "给一段自然语言需求，让模型生成一个完整代码仓库。", comment: "Claude Opus 4.7 和 GPT-5.5 是明显头部，MiniMax-M3 与 Kimi、GLM 构成第二梯队。", scores: [{m:"Claude Opus 4.7",v:56.3,d:"56.3"},{m:"GPT-5.5",v:52.9,d:"52.9"},{m:"Kimi K2.6 Thinking",v:42.8,d:"42.8"},{m:"MiniMax-M3",v:42.3,d:"42.3"},{m:"GLM Thinking",v:41.0,d:"41.0"},{m:"DeepSeek V4 Pro",v:35.5,d:"35.5"},{m:"MiniMax-M2.7",v:35.0,d:"35.0"},{m:"Gemini 3.0 Pro",v:21.6,d:"21.6"},{m:"Claude Sonnet 4.5",v:null,d:"-"}] },
+      { category: "Coding", name: "SWE-Atlas-Test Writing", meaning: "软件工程测试编写评测", ability: "单元测试/集成测试设计、边界用例覆盖、测试可运行性", simple: "不只写功能代码，而是考模型会不会给真实项目补测试。", comment: "GPT-5.5 在测试编写上断层领先，第二梯队从 29.8 到 31.8 非常拥挤。", scores: [{m:"GPT-5.5",v:42.6,d:"42.6"},{m:"Claude Sonnet 4.5",v:31.8,d:"31.8"},{m:"MiniMax-M3",v:30.8,d:"30.8"},{m:"Claude Opus 4.7",v:30.1,d:"30.1"},{m:"Gemini 3.0 Pro",v:29.8,d:"29.8"},{m:"MiniMax-M2.7",v:18.9,d:"18.9"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Coding", name: "SciCode-Efficiency", meaning: "科学计算代码效率评测", ability: "科学编程、算法效率、数值计算、性能优化", simple: "看模型写出的科学计算代码是否又正确又高效。", comment: "GPT-5.5 与 Claude Opus 4.7 构成头部，MiniMax-M3 居中但与头部仍有接近 8～12 分差距。", scores: [{m:"GPT-5.5",v:46.6,d:"46.6"},{m:"Claude Opus 4.7",v:42.2,d:"42.2"},{m:"MiniMax-M3",v:34.8,d:"34.8"},{m:"Gemini 3.0 Pro",v:19.7,d:"19.7"},{m:"MiniMax-M2.7",v:14.0,d:"14.0"},{m:"Claude Sonnet 4.5",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Coding", name: "LiveSQLBench", meaning: "在线 SQL 能力评测", ability: "SQL 生成、数据库查询、表结构理解、复杂条件推理", simple: "给数据库和问题，让模型写 SQL 查出正确结果。", comment: "头部差距极小，Claude Opus 4.7 仅领先 MiniMax-M3 和 GPT-5.5 0.8 分。", scores: [{m:"Claude Opus 4.7",v:41.0,d:"41.0"},{m:"MiniMax-M3",v:40.2,d:"40.2"},{m:"GPT-5.5",v:40.2,d:"40.2"},{m:"Gemini 3.0 Pro",v:39.8,d:"39.8"},{m:"MiniMax-M2.7",v:33.2,d:"33.2"},{m:"Claude Sonnet 4.5",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Coding", name: "CI-Bench", meaning: "持续集成失败修复评测", ability: "CI 日志理解、失败定位、自动修复、回归验证", simple: "看模型能否根据 CI/CD 报错把项目修到构建通过。", comment: "GPT-5.5 领先优势较清晰，MiniMax-M3 与 Gemini、Claude Opus 4.7 仍在同一梯队内。", scores: [{m:"GPT-5.5",v:25.4,d:"25.4"},{m:"Claude Opus 4.7",v:22.9,d:"22.9"},{m:"Gemini 3.0 Pro",v:21.0,d:"21.0"},{m:"MiniMax-M3",v:20.5,d:"20.5"},{m:"MiniMax-M2.7",v:15.4,d:"15.4"},{m:"Claude Sonnet 4.5",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Coding", name: "Vibe Code Bench / VIBE", meaning: "端到端 Web 应用开发评测", ability: "产品需求理解、前后端实现、UI/UX、可运行应用交付", simple: "给产品描述，让模型做出一个完整可用的 Web 应用。", comment: "Claude Opus 4.7 是唯一明显高分，MiniMax-M3 与 GPT-5.5 几乎持平，属于第二梯队前列。", scores: [{m:"Claude Opus 4.7",v:56.9,d:"56.9"},{m:"GPT-5.5",v:50.5,d:"50.5"},{m:"MiniMax-M3",v:50.1,d:"50.1"},{m:"GLM Thinking",v:48.2,d:"48.2"},{m:"Kimi K2.6 Thinking",v:46.0,d:"46.0"},{m:"Claude Sonnet 4.5",v:42.8,d:"42.8"},{m:"DeepSeek V4 Pro",v:41.0,d:"41.0"},{m:"Gemini 3.0 Pro",v:28.0,d:"28.0"},{m:"MiniMax-M2.7",v:27.9,d:"27.9"}] },
+      { category: "Coding", name: "SVG-Bench", meaning: "SVG 代码生成评测", ability: "矢量图代码生成、几何/视觉推理、指令遵循", simple: "让模型用 SVG 代码画出指定图形。", comment: "DeepSeek V4 Pro 在 SVG 生成上领先，MiniMax-M3 位于头部集团，和第二名差距不到 1 分。", scores: [{m:"DeepSeek V4 Pro",v:68.7,d:"68.7"},{m:"Claude Sonnet 4.5",v:64.3,d:"64.3"},{m:"MiniMax-M3",v:63.7,d:"63.7"},{m:"Claude Opus 4.7",v:62.3,d:"62.3"},{m:"Kimi K2.6 Thinking",v:60.0,d:"60.0"},{m:"Gemini 3.0 Pro",v:59.2,d:"59.2"},{m:"GPT-5.5",v:58.2,d:"58.2"},{m:"GLM Thinking",v:56.9,d:"56.9"},{m:"MiniMax-M2.7",v:48.0,d:"48.0"}] },
+      { category: "Coding", name: "PostTrainBench", meaning: "大模型后训练自动化评测", ability: "AI 研发流程、训练脚本、实验调参、结果评估", simple: "给模型一个小模型和算力预算，看它能否自动完成后训练。", comment: "Claude Opus 4.7、GPT-5.5、MiniMax-M3 形成头部三强，之后出现明显断层。", scores: [{m:"Claude Opus 4.7",v:42.4,d:"42.4"},{m:"GPT-5.5",v:39.3,d:"39.3"},{m:"MiniMax-M3",v:37.7,d:"37.7"},{m:"Gemini 3.0 Pro",v:15.2,d:"15.2"},{m:"MiniMax-M2.7",v:13.3,d:"13.3"},{m:"Claude Sonnet 4.5",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Coding", name: "KernelBench-Hard", meaning: "高难度 GPU Kernel 编写评测", ability: "CUDA/Triton 内核生成、正确性、性能优化", simple: "看模型会不会写高性能 GPU 计算内核。", comment: "Claude Opus 4.7 领先，MiniMax-M3 是最接近的追赶者，并明显高于 GPT-5.5。", scores: [{m:"Claude Opus 4.7",v:30.7,d:"30.7"},{m:"MiniMax-M3",v:28.0,d:"28.0"},{m:"GPT-5.5",v:20.9,d:"20.9"},{m:"Gemini 3.0 Pro",v:18.6,d:"18.6"},{m:"MiniMax-M2.7",v:10.5,d:"10.5"},{m:"Claude Sonnet 4.5",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Coding", name: "PaperBench", meaning: "论文复现评测", ability: "论文理解、实验复现、代码实现、结果对齐", simple: "给 AI 论文，让模型尝试复现其中方法和实验。", comment: "Claude Opus 4.7 与 GPT-5.5 几乎并列第一，MiniMax-M3 排第三但仍落后约 5 分。", scores: [{m:"Claude Opus 4.7",v:58.5,d:"58.5"},{m:"GPT-5.5",v:57.5,d:"57.5"},{m:"MiniMax-M3",v:52.6,d:"52.6"},{m:"Gemini 3.0 Pro",v:46.7,d:"46.7"},{m:"MiniMax-M2.7",v:30.6,d:"30.6"},{m:"Claude Sonnet 4.5",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Computer Agent", name: "BrowseComp", meaning: "网页浏览信息查找评测", ability: "搜索、网页导航、多跳检索、证据整合", simple: "考模型能不能上网找到很难查的信息。", comment: "浏览检索类任务头部竞争激烈，但 MiniMax-M3 在该项明显落后于第一梯队。", scores: [{m:"Gemini 3.0 Pro",v:85.9,d:"85.9"},{m:"Kimi K2.6 Thinking",v:85.2,d:"85.2"},{m:"GPT-5.5",v:84.4,d:"84.4"},{m:"DeepSeek V4 Pro",v:83.4,d:"83.4"},{m:"GLM Thinking",v:79.3,d:"79.3"},{m:"MiniMax-M2.7",v:76.3,d:"76.3"},{m:"Claude Sonnet 4.5",v:74.7,d:"74.7"},{m:"Claude Opus 4.7",v:70.3,d:"70.3"},{m:"MiniMax-M3",v:63.5,d:"63.5"}] },
+      { category: "Computer Agent", name: "DABench / DA-Bench", meaning: "数据分析智能体评测", ability: "表格/数据文件分析、代码执行、统计推理、结论生成", simple: "让模型像数据分析师一样处理数据并回答问题。", comment: "Claude 系模型占据前两名，MiniMax-M3 与头部差距约 2～5 分。", scores: [{m:"Claude Opus 4.7",v:77.7,d:"77.7"},{m:"Claude Sonnet 4.5",v:75.8,d:"75.8"},{m:"MiniMax-M3",v:73.2,d:"73.2"},{m:"MiniMax-M2.7",v:66.8,d:"66.8"},{m:"GPT-5.5",v:null,d:"-"},{m:"Gemini 3.0 Pro",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Computer Agent", name: "GPQA Robotics", meaning: "机器人领域高难问答评测", ability: "机器人学专业知识、研究生级推理、抗搜索题目", simple: "GPQA 的机器人学方向版本，考专业知识和推理。", comment: "Gemini 3.0 Pro 在该项呈现断层优势，其余头部模型集中在 75～81 分附近。", scores: [{m:"Gemini 3.0 Pro",v:97.8,d:"97.8"},{m:"GPT-5.5",v:80.7,d:"80.7"},{m:"Claude Opus 4.7",v:79.8,d:"79.8"},{m:"Claude Sonnet 4.5",v:75.7,d:"75.7"},{m:"MiniMax-M3",v:74.8,d:"74.8"},{m:"DeepSeek V4 Pro",v:70.3,d:"70.3"},{m:"GLM Thinking",v:68.3,d:"68.3"},{m:"MiniMax-M2.7",v:66.4,d:"66.4"},{m:"Kimi K2.6 Thinking",v:65.1,d:"65.1"}] },
+      { category: "Computer Agent", name: "BrowseToolBench", meaning: "浏览器工具使用评测", ability: "浏览器工具调用、搜索/打开/抽取网页信息、步骤规划", simple: "重点看模型会不会正确使用浏览器相关工具完成任务。", comment: "Claude Opus 4.7 领先明显，MiniMax-M3 排第二并领先后续模型 6 分以上。", scores: [{m:"Claude Opus 4.7",v:81.3,d:"81.3"},{m:"MiniMax-M3",v:76.1,d:"76.1"},{m:"GPT-5.5",v:70.0,d:"70.0"},{m:"MiniMax-M2.7",v:68.9,d:"68.9"},{m:"Gemini 3.0 Pro",v:62.0,d:"62.0"},{m:"Claude Sonnet 4.5",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Computer Agent", name: "OfficeQA Pro", meaning: "办公文档问答/推理评测", ability: "Word/PDF/表格等办公资料理解、信息定位、企业文档推理", simple: "面向真实办公资料的问题回答和证据定位。", comment: "Gemini 3.0 Pro 在办公文档问答上领先较多，MiniMax-M3 与 Claude Opus 4.7 接近但低于 GPT-5.5。", scores: [{m:"Gemini 3.0 Pro",v:58.1,d:"58.1"},{m:"GPT-5.5",v:52.6,d:"52.6"},{m:"MiniMax-M3",v:45.1,d:"45.1"},{m:"Claude Opus 4.7",v:43.6,d:"43.6"},{m:"MiniMax-M2.7",v:null,d:"-"},{m:"Claude Sonnet 4.5",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Computer Agent", name: "SpreadsheetBench-v1", meaning: "电子表格操作评测", ability: "Excel/表格理解、公式、筛选、统计、跨表操作", simple: "考模型能不能像人一样操作复杂表格。", comment: "表格操作项头部非常密集，MiniMax-M3 落后第一梯队约 4～5 分但明显高于 Claude/GPT/Gemini。", scores: [{m:"GLM Thinking",v:85.2,d:"85.2"},{m:"MiniMax-M2.7",v:84.9,d:"84.9"},{m:"DeepSeek V4 Pro",v:84.9,d:"84.9"},{m:"Kimi K2.6 Thinking",v:84.5,d:"84.5"},{m:"MiniMax-M3",v:80.4,d:"80.4"},{m:"Claude Opus 4.7",v:68.5,d:"68.5"},{m:"GPT-5.5",v:68.1,d:"68.1"},{m:"Gemini 3.0 Pro",v:56.3,d:"56.3"},{m:"Claude Sonnet 4.5",v:null,d:"-"}] },
+      { category: "Computer Agent", name: "YC-Bench", meaning: "长周期创业经营智能体评测", ability: "长期规划、记忆、一致执行、商业决策", simple: "让模型模拟经营一家 AI 创业公司，考长期策略能力。", comment: "Claude Opus 4.7 与 MiniMax-M3 是长周期创业模拟的头部，二者差距很小。", scores: [{m:"Claude Opus 4.7",v:2.2,d:"2.2M"},{m:"MiniMax-M3",v:2.1,d:"2.1M"},{m:"GPT-5.5",v:1.3,d:"1.3M"},{m:"Gemini 3.0 Pro",v:1.1,d:"1.1M"},{m:"DeepSeek V4 Pro",v:0.5,d:"0.5M"},{m:"Claude Sonnet 4.5",v:0.1,d:"0.1M"},{m:"MiniMax-M2.7",v:0.0,d:"0.0M"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Computer Agent", name: "LOCA-Bench (256k)", meaning: "长上下文智能体评测", ability: "超长上下文处理、长期任务、记忆与检索", simple: "在 256k 级别上下文增长下，看智能体是否还能稳定完成任务。", comment: "在截图给出的模型中，MiniMax-M3 对 Claude Opus 4.7 有超过 11 分优势。", scores: [{m:"MiniMax-M3",v:48.3,d:"48.3"},{m:"Claude Opus 4.7",v:37.0,d:"37.0"},{m:"MiniMax-M2.7",v:null,d:"-"},{m:"GPT-5.5",v:null,d:"-"},{m:"Gemini 3.0 Pro",v:null,d:"-"},{m:"Claude Sonnet 4.5",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Computer Agent", name: "MCP-Atlas", meaning: "MCP 工具使用能力评测", ability: "MCP 服务器工具调用、参数选择、多工具协作", simple: "考模型能否通过真实 MCP 工具完成自然语言任务。", comment: "MCP 工具使用头部差距很小，MiniMax-M3 距第一名不到 3 分。", scores: [{m:"Claude Opus 4.7",v:77.0,d:"77.0"},{m:"GPT-5.5",v:76.3,d:"76.3"},{m:"DeepSeek V4 Pro",v:75.6,d:"75.6"},{m:"MiniMax-M3",v:74.2,d:"74.2"},{m:"GLM Thinking",v:71.8,d:"71.8"},{m:"Gemini 3.0 Pro",v:69.2,d:"69.2"},{m:"Kimi K2.6 Thinking",v:66.6,d:"66.6"},{m:"Claude Sonnet 4.5",v:61.3,d:"61.3"},{m:"MiniMax-M2.7",v:49.4,d:"49.4"}] },
+      { category: "Computer Agent", name: "Apex-Agents", meaning: "专业服务长程 Agent 评测", ability: "投行/法律/咨询等专业工作流、多应用协作、长任务执行", simple: "看智能体能否完成真实白领专业服务任务。", comment: "Claude Opus 4.7 在专业长程工作流上断层领先，MiniMax-M3 暂处中游。", scores: [{m:"Claude Opus 4.7",v:57.2,d:"57.2"},{m:"GPT-5.5",v:41.7,d:"41.7"},{m:"Gemini 3.0 Pro",v:33.4,d:"33.4"},{m:"MiniMax-M3",v:27.7,d:"27.7"},{m:"Claude Sonnet 4.5",v:26.2,d:"26.2"},{m:"MiniMax-M2.7",v:5.6,d:"5.6"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Computer Agent", name: "CUA-Eval", meaning: "计算机使用智能体评测", ability: "鼠标键盘/GUI 操作、桌面任务、执行效率", simple: "CUA 即 Computer-Use Agent，考模型能否像人一样操作电脑。", comment: "MiniMax-M3 是该项第一，领先 Claude Opus 4.7 约 3 分，说明桌面操作类 Agent 能力较强。", scores: [{m:"MiniMax-M3",v:74.5,d:"74.5"},{m:"Claude Opus 4.7",v:71.6,d:"71.6"},{m:"Claude Sonnet 4.5",v:68.3,d:"68.3"},{m:"GLM Thinking",v:62.7,d:"62.7"},{m:"Kimi K2.6 Thinking",v:61.5,d:"61.5"},{m:"DeepSeek V4 Pro",v:58.4,d:"58.4"},{m:"Gemini 3.0 Pro",v:57.8,d:"57.8"},{m:"MiniMax-M2.7",v:49.7,d:"49.7"},{m:"GPT-5.5",v:null,d:"-"}] },
+      { category: "GUI", name: "OSWorld-Verified", meaning: "真实操作系统 GUI 任务评测（校验版）", ability: "桌面应用操作、视觉理解、鼠标键盘执行、任务完成率", simple: "在真实 OS 环境里让模型操作应用完成任务。", comment: "GPT-5.5 与 Gemini 3.0 Pro 领先，MiniMax-M3 低于第一梯队但高于 Claude Opus 4.7。", scores: [{m:"GPT-5.5",v:78.7,d:"78.7"},{m:"Gemini 3.0 Pro",v:76.2,d:"76.2"},{m:"Kimi K2.6 Thinking",v:73.1,d:"73.1"},{m:"Claude Sonnet 4.5",v:72.5,d:"72.5"},{m:"MiniMax-M3",v:70.1,d:"70.1"},{m:"Claude Opus 4.7",v:62.8,d:"62.8"},{m:"MiniMax-M2.7",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"}] },
+      { category: "Multimodal", name: "OmniDocBench", meaning: "多样化文档解析评测", ability: "PDF/扫描件/图文混排解析、表格/公式/版面理解", simple: "考模型或文档解析系统能否准确读懂复杂文档页面。", comment: "MiniMax-M3 在文档解析上排名第一，且对第二名有 2 分以上优势。", scores: [{m:"MiniMax-M3",v:91.6,d:"91.6"},{m:"Claude Opus 4.7",v:89.3,d:"89.3"},{m:"GPT-5.5",v:87.5,d:"87.5"},{m:"Claude Sonnet 4.5",v:86.9,d:"86.9"},{m:"Gemini 3.0 Pro",v:68.3,d:"68.3"},{m:"MiniMax-M2.7",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Multimodal", name: "MMMU-Pro", meaning: "高难多学科多模态理解评测", ability: "图文理解、跨学科知识、复杂推理、抗文本捷径", simple: "比 MMMU 更难，要求真正看图并结合专业知识推理。", comment: "前四名差距不到 3 分，MiniMax-M3 处于紧贴头部的第二梯队。", scores: [{m:"GPT-5.5",v:81.2,d:"81.2"},{m:"Gemini 3.0 Pro",v:80.5,d:"80.5"},{m:"Kimi K2.6 Thinking",v:79.8,d:"79.8"},{m:"MiniMax-M3",v:78.3,d:"78.3"},{m:"Claude Opus 4.7",v:77.0,d:"77.0"},{m:"Claude Sonnet 4.5",v:74.5,d:"74.5"},{m:"MiniMax-M2.7",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"}] },
+      { category: "Multimodal", name: "Video-MMMU", meaning: "教育视频多学科理解评测", ability: "视频信息获取、知识学习、跨学科问答、时序理解", simple: "看模型能否从教学视频中学习并回答问题。", comment: "GPT-5.5 领先不到 2 分，MiniMax-M3 在视频多学科理解上非常接近第一名。", scores: [{m:"GPT-5.5",v:86.4,d:"86.4"},{m:"MiniMax-M3",v:84.6,d:"84.6"},{m:"Gemini 3.0 Pro",v:82.9,d:"82.9"},{m:"Claude Opus 4.7",v:80.0,d:"80.0"},{m:"MiniMax-M2.7",v:null,d:"-"},{m:"Claude Sonnet 4.5",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Multimodal", name: "VideoMME (w/o subs)", meaning: "无字幕视频理解评测", ability: "长视频理解、事件识别、时序推理、视觉/音频信息整合", simple: "w/o subs 表示不提供字幕，只靠视频内容理解。", comment: "GPT-5.5 保持领先，MiniMax-M3 位列第二且高于 Gemini 3.0 Pro。", scores: [{m:"GPT-5.5",v:89.6,d:"89.6"},{m:"MiniMax-M3",v:85.6,d:"85.6"},{m:"Gemini 3.0 Pro",v:82.9,d:"82.9"},{m:"MiniMax-M2.7",v:null,d:"-"},{m:"Claude Opus 4.7",v:null,d:"-"},{m:"Claude Sonnet 4.5",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Reasoning", name: "IMO 2025", meaning: "国际数学奥林匹克 2025 题目评测", ability: "高难数学证明、抽象推理、严谨解题", simple: "用 IMO 级别数学题测试模型深度推理。", comment: "Gemini 3.0 Pro 达到满分，MiniMax-M3 以 35/42 排在已给分模型第二。", scores: [{m:"Gemini 3.0 Pro",v:100,d:"42/42"},{m:"MiniMax-M3",v:83.33,d:"35/42"},{m:"GPT-5.5",v:76.7,d:"76.7%"},{m:"Claude Opus 4.7",v:40.48,d:"17/42"},{m:"MiniMax-M2.7",v:null,d:"-"},{m:"Claude Sonnet 4.5",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] },
+      { category: "Reasoning", name: "USAMO 2025", meaning: "美国数学奥林匹克 2025 题目评测", ability: "高中奥赛数学证明、组合/数论/几何/代数推理", simple: "用 USAMO 级别证明题测试模型数学推理。", comment: "GPT-5.5 在 USAMO 上领先，MiniMax-M3 与 Gemini 3.0 Pro 并列第二。", scores: [{m:"GPT-5.5",v:90.8,d:"90.8%"},{m:"MiniMax-M3",v:85.71,d:"36/42"},{m:"Gemini 3.0 Pro",v:85.71,d:"36/42"},{m:"Claude Opus 4.7",v:52.88,d:"52.88%"},{m:"MiniMax-M2.7",v:null,d:"-"},{m:"Claude Sonnet 4.5",v:null,d:"-"},{m:"DeepSeek V4 Pro",v:null,d:"-"},{m:"GLM Thinking",v:null,d:"-"},{m:"Kimi K2.6 Thinking",v:null,d:"-"}] }
+    ];
+
+    const filters = document.getElementById("filters");
+    const cards = document.getElementById("cards");
+    document.getElementById("benchCount").textContent = benchmarks.length;
+
+    const categories = ["全部", ...Array.from(new Set(benchmarks.map(item => item.category)))];
+    let current = "全部";
+
+    function renderFilters() {
+      filters.innerHTML = categories.map(cat => `<button class="chip ${cat === current ? "active" : ""}" data-cat="${cat}">${cat}</button>`).join("");
+      filters.querySelectorAll("button").forEach(button => {
+        button.addEventListener("click", () => {
+          current = button.dataset.cat;
+          renderFilters();
+          renderCards();
+        });
+      });
+    }
+
+    function infoItem(label, value) {
+      return `<div class="info-item"><span class="label">${label}</span><div class="value">${value}</div></div>`;
+    }
+
+    function renderBars(scores) {
+      const valid = scores.filter(s => typeof s.v === "number");
+      const max = Math.max(...valid.map(s => s.v), 1);
+      return scores.map((s, index) => {
+        const height = s.v === null ? 0 : Math.max(4, (s.v / max) * 100);
+        const color = modelColors[s.m] || "#64748b";
+        const rankText = s.v === null ? "未给分" : `第 ${index + 1} 名`;
+        return `<div class="bar-col ${s.v === null ? "missing" : ""}" title="${s.m} · ${s.d} · ${rankText}" style="--h:${height}; --model-color:${color}">
+          <div class="bar-value">${s.d}</div>
+          <div class="bar"></div>
+          <div class="model">${s.m}</div>
+        </div>`;
+      }).join("");
+    }
+
+    function renderCards() {
+      const list = current === "全部" ? benchmarks : benchmarks.filter(item => item.category === current);
+      cards.innerHTML = list.map(item => {
+        const first = item.scores.find(s => s.v !== null);
+        const catColor = categoryColors[item.category] || "#4967ff";
+        return `<article class="card" style="--cat-color:${catColor}">
+          <div class="card-head">
+            <div class="title-wrap">
+              <span class="category">${item.category}</span>
+              <h2>${item.name}</h2>
+            </div>
+            <div class="rank-badge">头名：${first ? `${first.m} · ${first.d}` : "-"}</div>
+          </div>
+          <div class="info">
+            ${infoItem("中文含义", item.meaning)}
+            ${infoItem("主要考察能力", item.ability)}
+            ${infoItem("简单理解", item.simple)}
+            ${infoItem("评测项", item.name)}
+          </div>
+          <p class="comment"><b>一句话点评：</b>${item.comment}</p>
+          <div class="chart-wrap">
+            <div class="chart-title"><span>截图分数排名柱状图</span><span>按本评测最高有效分归一化高度</span></div>
+            <div class="chart-scroll"><div class="bars" style="--count:${item.scores.length}">${renderBars(item.scores)}</div></div>
+          </div>
+        </article>`;
+      }).join("");
+    }
+
+    renderFilters();
+    renderCards();
+  </script>
+</body>
+</html>
