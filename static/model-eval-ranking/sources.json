@@ -297,6 +297,16 @@
       "vendor": "Tencent (混元)",
       "releaseUrl": "https://hunyuan.tencent.com/news",
       "modelCardUrl": "https://hunyuan.tencent.com/modelSquare"
+    },
+    {
+      "vendor": "Alibaba (Qwen / 通义千问)",
+      "releaseUrl": "https://qwen.ai/home",
+      "alternateReleaseUrl": "https://qianwen.aliyun.com/",
+      "blogUrl": "https://qwenlm.github.io/blog/",
+      "githubUrl": "https://github.com/QwenLM",
+      "huggingfaceUrl": "https://huggingface.co/Qwen",
+      "modelscopeUrl": "https://modelscope.cn/organization/qwen",
+      "notes": "千问发布节奏较快；Qwen3.7（旗舰）2026-05 在阿里云峰会发布。优先看 qwen.ai/home 与 QwenLM GitHub releases"
     }
   ]
 }

@@ -26,10 +26,10 @@ plusluo 在飞书 / 对话里只要说出以下任一意图即视为触发本任
 
 ## 二、关注范围（硬约束）
 
-### 关注厂家（共 8 家）
+### 关注厂家（共 9 家）
 
-| 厂家 | 主要发布页 | 模型卡片 |
-|------|-----------|---------|
+| 厂家 | 主要发布页 | 模型卡片 / 模型库 |
+|------|-----------|-----------------|
 | Anthropic (Claude) | https://www.anthropic.com/news | https://www.anthropic.com/claude |
 | OpenAI (GPT) | https://openai.com/news/ | https://platform.openai.com/docs/models |
 | Google (Gemini) | https://blog.google/technology/google-deepmind/ | https://deepmind.google/models/gemini/ |
@@ -38,6 +38,7 @@ plusluo 在飞书 / 对话里只要说出以下任一意图即视为触发本任
 | Zhipu (GLM) | https://www.zhipuai.cn/news | https://open.bigmodel.cn/dev/api |
 | Moonshot (Kimi) | https://platform.moonshot.cn/blog | https://platform.moonshot.cn/docs |
 | Tencent (混元 / Hunyuan) | https://hunyuan.tencent.com/news | https://hunyuan.tencent.com/modelSquare |
+| **Alibaba (Qwen / 通义千问)** | https://qwen.ai/home（英）/ https://qianwen.aliyun.com/（中） | https://github.com/QwenLM · https://huggingface.co/Qwen · https://modelscope.cn/organization/qwen |
 
 > 完整 URL 也在 `static/model-eval-ranking/sources.json` 的 `vendorReleasePages` 字段里。
 
@@ -78,7 +79,7 @@ git pull origin master
 
 按以下优先级抓取：
 
-1. **8 家关注厂家**的 `releaseUrl`（看最近 2 周新闻 / 博客是否发了新模型）
+1. **9 家关注厂家**的 `releaseUrl`（看最近 2 周新闻 / 博客是否发了新模型）
 2. **公开榜单**：
    - SWE-Bench：https://www.swebench.com/
    - Terminal-Bench：https://www.tbench.ai/
@@ -173,7 +174,7 @@ model-eval-ranking-pending/<YYYY-MM-DD>.md
 - ⛔ 不要修改 `themes/`
 - ⛔ 不要在第一轮检查就改 v1.x 现有数据；先写到 pending 文件
 - ⛔ 不要 push 没有确认的版本
-- ⛔ 检查范围限定在 8 家关注厂家
+- ⛔ 检查范围限定在 9 家关注厂家
 - ⛔ 输出语言：中文
 - ⛔ 禁止删除 v1.0 的快照（保留版本历史可审计）
 
@@ -186,7 +187,7 @@ model-eval-ranking-pending/<YYYY-MM-DD>.md
 
 【固定上下文】
 - 工作仓库：/Users/plusluo/Documents/code/plusluo-site（master 分支）
-- 关注厂家：Claude / Gemini / GPT / MiniMax / Kimi / 混元(Tencent Hunyuan) / DeepSeek / GLM
+- 关注厂家：Claude / Gemini / GPT / MiniMax / Kimi / 混元(Tencent Hunyuan) / DeepSeek / GLM / Qwen(阿里通义千问)
 - 模型保留策略：Claude 保留最近 2 个版本，其他厂家仅保留当前最新模型
 - 当前版本：读取 `static/model-eval-ranking/version.json` 中 currentVersion 与 models 字段
 - 评测官方来源：读取 `static/model-eval-ranking/sources.json`
@@ -203,7 +204,7 @@ model-eval-ranking-pending/<YYYY-MM-DD>.md
 【严格约束】
 - 不要修改 themes 目录
 - 不要 push 到远程；所有发现都先以本地 pending 文件呈现
-- 检查范围限定在 8 家关注厂家
+- 检查范围限定在 9 家关注厂家
 - 输出语言：中文
 - 完成后简洁汇报：今日检查结果 + 是否需要发起新版本
 ```

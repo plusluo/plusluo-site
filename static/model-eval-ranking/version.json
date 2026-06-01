@@ -12,7 +12,8 @@
     "Moonshot (Kimi)",
     "Tencent (混元/Hunyuan)",
     "DeepSeek",
-    "Zhipu (GLM)"
+    "Zhipu (GLM)",
+    "Alibaba (Qwen/通义千问)"
   ],
   "vendorRetentionPolicy": {
     "Anthropic (Claude)": {
@@ -39,6 +40,10 @@
     {
       "vendor": "Tencent (混元/Hunyuan)",
       "note": "当前数据中暂无混元数据，下一次更新时若官方榜单出现需补齐"
+    },
+    {
+      "vendor": "Alibaba (Qwen/通义千问)",
+      "note": "当前数据中暂无千问数据；最新版本 Qwen3.7（2026-05-20 阿里云峰会发布）。下次更新需到 https://qwen.ai/home / https://qianwen.aliyun.com/ / https://github.com/QwenLM 查最新模型与评测分数"
     }
   ],
   "history": [
