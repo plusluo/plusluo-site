@@ -1,0 +1,28 @@
+{{/*
+  递归渲染临时发表页的树形目录
+  数据来源：data/templist.json
+  节点规则：含 children 字段 → 目录节点；含 file 字段 → 文章叶子节点
+  调整目录结构只需修改 JSON，无需改动本模板
+*/}}
+{{- range . }}
+  {{- if isset . "children" }}
+    <details class="tl-cat">
+      <summary class="tl-cat-label">
+        <span class="tl-caret" aria-hidden="true"></span>
+        <span class="tl-cat-name">{{ .name }}</span>
+      </summary>
+      <div class="tl-cat-children">
+        {{ partial "templist/tree.html" .children }}
+      </div>
+    </details>
+  {{- else if .file }}
+    <a class="tl-item" href="{{ .file }}"
+       data-file="{{ .file }}"
+       data-title="{{ .title }}"
+       {{- with .date }} data-date="{{ . }}"{{ end }}
+       {{- with .desc }} data-desc="{{ . }}"{{ end }}>
+      <span class="tl-item-title">{{ .title }}</span>
+      {{- with .date }}<span class="tl-item-date">{{ . }}</span>{{ end }}
+    </a>
+  {{- end }}
+{{- end }}

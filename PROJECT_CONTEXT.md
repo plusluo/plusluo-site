@@ -240,6 +240,30 @@ cd themes/bilberry-hugo-theme && git pull origin master && cd ../..
 
 ---
 
+## 八-补充、信息归档页（/list.html + /list/xxxx.html）
+
+> 2026-07-22 新增。独立于博客主题外壳的全屏页面，左树右文，用于归档知识信息类内容（AI 或他人所写、收集摘抄的；联合整理的；自己写过再包装加工的），并非全为本人手写。
+
+**URL 结构**：
+- `/list.html` — 信息归档首页（带左侧目录），用于浏览完整目录；目录默认折叠，打开时不自动选中文
+- `/list/xxxx.html` — 每篇文章的独立短链（纯文章页，无任何目录），即转发分享用的地址
+
+| 组成部分 | 文件 | 说明 |
+|---------|------|------|
+| 页面入口 | `content/list.md` | `url: "/list.html"` + `type: page` + `layout: list`，标题"信息归档" |
+| 目录数据 | `data/templist.json` | **唯一需要维护的地方**：目录结构 + 文章元数据 |
+| 全屏布局 | `layouts/page/list.html` | 独立 HTML 文档，不复用主题外壳；浅色简洁风 |
+| 树形渲染 | `layouts/partials/templist/tree.html` | 递归 partial，含 `children` 键为目录、含 `file` 键为文章 |
+| 文章存放 | `static/list/<文章>.html` | **所有文章平铺在同一目录**；首页右侧 iframe 嵌入（样式隔离），短链直接访问即纯文章页 |
+
+**新增文章流程**：① HTML 放入 `static/list/`（**先检查文件名不重名**，建议 `YYYY-MM-DD-主题.html`）→ ② 在 `data/templist.json` 中添加条目（title/date/file/desc）→ ③ 构建部署。调整目录只需改 JSON，无需动模板。
+
+**交互特性**：原生 `<details>` 折叠目录（默认全部折叠）；点击文章 iframe 加载，不改变 URL；选中文章后工具栏标题旁出现「复制链接」按钮，一键复制 `/list/xxxx.html` 短链；「新窗口打开」直达纯文章页；移动端侧滑目录（≤768px）。
+
+**注意**：页面未加入 `topnav` 菜单，仅通过直接 URL 访问；空目录（children 为空数组）也会正常渲染（模板用 `isset` 判断）；`public/list.html` 与 `public/list/` 目录可共存，无路由冲突。
+
+---
+
 ## 九、AI 工作注意事项
 
 1. **所有新建文档默认在头部注明作者 plusluo**
@@ -252,3 +276,4 @@ cd themes/bilberry-hugo-theme && git pull origin master && cd ../..
 8. 文章 front matter 中 `icon` 字段可自定义气泡图标（参考分类图标映射表）
 9. 当前站点内容均为**示例文章**，后续通过搬运脚本替换为真实内容
 10. **用户的 TAPD 项目地址**：https://tapd.woa.com/tapd_fe/10121621/story/list
+11. **信息归档文章命名查重**：归档文章全部平铺在 `static/list/` 同一目录、以 `/list/xxxx.html` 短链对外，新增文章时**必须先检查文件名与已有文章不重复**（建议 `YYYY-MM-DD-主题` 格式，日期前缀天然防重）

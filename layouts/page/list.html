@@ -1,0 +1,405 @@
+{{/*
+  临时发表页全屏布局（独立于博客主题外壳）
+  左：树形目录（data/templist.json 驱动，经 templist/tree.html 递归渲染）
+  右：文章详情（iframe 嵌入 static/list/ 下的独立 HTML，样式天然隔离）
+  分享机制：文章平铺在 static/list/，/list/xxxx.html 即为该文章的独立短链（纯文章页无目录）
+*/}}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ .Title }} · {{ .Site.Title }}</title>
+<meta name="author" content="plusluo">
+<style>
+  :root {
+    --tl-bg: #f6f6f4;
+    --tl-panel: #ffffff;
+    --tl-border: #e7e5e0;
+    --tl-text: #333333;
+    --tl-muted: #9a958c;
+    --tl-accent: #E8913A;
+    --tl-accent-deep: #c9741f;
+    --tl-accent-soft: rgba(232, 145, 58, 0.10);
+    --tl-hover: #f0efeb;
+    --tl-header-h: 48px;
+    --tl-sidebar-w: 280px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    color: var(--tl-text);
+    background: var(--tl-bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== 顶栏 ===== */
+  .tl-header {
+    height: var(--tl-header-h);
+    flex: 0 0 var(--tl-header-h);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+    background: var(--tl-panel);
+    border-bottom: 1px solid var(--tl-border);
+    z-index: 20;
+  }
+  .tl-menu-btn {
+    display: none;
+    border: 1px solid var(--tl-border);
+    background: var(--tl-panel);
+    border-radius: 6px;
+    width: 32px; height: 32px;
+    font-size: 15px;
+    color: var(--tl-text);
+    cursor: pointer;
+  }
+  .tl-home {
+    font-size: 13px;
+    color: var(--tl-muted);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color .15s;
+  }
+  .tl-home:hover { color: var(--tl-accent-deep); }
+  .tl-header h1 {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tl-count {
+    font-size: 12px;
+    color: var(--tl-muted);
+    white-space: nowrap;
+  }
+
+  /* ===== 主体 ===== */
+  .tl-main {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+  }
+
+  /* ===== 左侧目录 ===== */
+  .tl-sidebar {
+    width: var(--tl-sidebar-w);
+    flex: 0 0 var(--tl-sidebar-w);
+    background: var(--tl-panel);
+    border-right: 1px solid var(--tl-border);
+    overflow-y: auto;
+    padding: 12px 10px 24px;
+  }
+  .tl-cat { margin-bottom: 2px; }
+  .tl-cat-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #4a4741;
+    border-radius: 6px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: background .15s;
+  }
+  .tl-cat-label::-webkit-details-marker { display: none; }
+  .tl-cat-label:hover { background: var(--tl-hover); }
+  .tl-caret {
+    width: 0; height: 0;
+    border-left: 5px solid var(--tl-muted);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    transition: transform .15s;
+    flex: 0 0 auto;
+  }
+  .tl-cat[open] > .tl-cat-label .tl-caret { transform: rotate(90deg); }
+  .tl-cat-children {
+    margin-left: 12px;
+    padding-left: 10px;
+    border-left: 1px solid #efede8;
+  }
+  .tl-cat-children:empty::after {
+    content: "暂无文章";
+    display: block;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: #c4c0b8;
+  }
+  .tl-item {
+    display: block;
+    padding: 7px 10px;
+    margin: 1px 0;
+    border-radius: 6px;
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: background .15s, border-color .15s;
+  }
+  .tl-item:hover { background: var(--tl-hover); }
+  .tl-item.active {
+    background: var(--tl-accent-soft);
+    border-left-color: var(--tl-accent);
+  }
+  .tl-item-title {
+    display: block;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #55524c;
+  }
+  .tl-item.active .tl-item-title { color: var(--tl-accent-deep); font-weight: 500; }
+  .tl-item-date {
+    display: block;
+    font-size: 11.5px;
+    color: var(--tl-muted);
+    margin-top: 2px;
+  }
+
+  /* ===== 右侧内容区 ===== */
+  .tl-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .tl-toolbar {
+    min-height: 52px;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 6px 20px;
+    background: var(--tl-panel);
+    border-bottom: 1px solid var(--tl-border);
+  }
+  .tl-toolbar-meta { flex: 1; min-width: 0; }
+  .tl-toolbar-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .tl-share-btn {
+    flex: 0 0 auto;
+    font-size: 12px;
+    padding: 2px 9px;
+    border: 1px solid var(--tl-border);
+    border-radius: 5px;
+    background: transparent;
+    color: var(--tl-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .15s, background .15s, border-color .15s;
+  }
+  .tl-share-btn:hover {
+    color: var(--tl-accent-deep);
+    border-color: #ecd9c3;
+    background: var(--tl-accent-soft);
+  }
+  .tl-toolbar-title {
+    flex: 1;
+    min-width: 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tl-toolbar-sub {
+    font-size: 12px;
+    color: var(--tl-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tl-open-new {
+    flex: 0 0 auto;
+    font-size: 12.5px;
+    color: var(--tl-accent-deep);
+    text-decoration: none;
+    border: 1px solid #ecd9c3;
+    border-radius: 6px;
+    padding: 4px 10px;
+    white-space: nowrap;
+    transition: background .15s;
+  }
+  .tl-open-new:hover { background: var(--tl-accent-soft); }
+  .tl-viewer {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+    background: var(--tl-panel);
+  }
+  .tl-viewer iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: none;
+  }
+  .tl-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--tl-muted);
+  }
+
+  /* ===== 移动端 ===== */
+  .tl-backdrop {
+    display: none;
+    position: fixed;
+    inset: var(--tl-header-h) 0 0 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 8;
+  }
+  @media (max-width: 768px) {
+    .tl-menu-btn { display: block; }
+    .tl-sidebar {
+      position: fixed;
+      top: var(--tl-header-h);
+      left: 0;
+      bottom: 0;
+      z-index: 9;
+      transform: translateX(-100%);
+      transition: transform .2s ease;
+      box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
+    }
+    .tl-sidebar.open { transform: translateX(0); }
+    .tl-backdrop.show { display: block; }
+    .tl-open-new { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="tl-header">
+  <button id="tlMenuBtn" class="tl-menu-btn" aria-label="打开目录">☰</button>
+  <h1>{{ .Title }}</h1>
+  <span class="tl-count" id="tlCount"></span>
+  <a class="tl-home" href="{{ "/" | relURL }}">← 返回{{ .Site.Title }}</a>
+</header>
+
+<div class="tl-main">
+  <aside class="tl-sidebar" id="tlSidebar">
+    {{ partial "templist/tree.html" .Site.Data.templist.categories }}
+  </aside>
+  <div class="tl-backdrop" id="tlBackdrop"></div>
+
+  <section class="tl-content">
+    <div class="tl-toolbar">
+      <div class="tl-toolbar-meta">
+        <div class="tl-toolbar-title-row">
+          <span class="tl-toolbar-title" id="tlDocTitle">从左侧目录选择一篇文章</span>
+          <button class="tl-share-btn" id="tlShareBtn" type="button" hidden>复制链接</button>
+        </div>
+        <div class="tl-toolbar-sub" id="tlDocSub">选中文章后，点标题旁的「复制链接」即可获得该文章的独立短链</div>
+      </div>
+      <a class="tl-open-new" id="tlOpenNew" href="#" target="_blank" rel="noopener" hidden>新窗口打开 ↗</a>
+    </div>
+    <div class="tl-viewer">
+      <iframe id="tlFrame" title="文章详情"></iframe>
+      <div class="tl-empty" id="tlEmpty">从左侧目录选择一篇文章开始阅读</div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var frame    = document.getElementById('tlFrame');
+  var empty    = document.getElementById('tlEmpty');
+  var docTitle = document.getElementById('tlDocTitle');
+  var docSub   = document.getElementById('tlDocSub');
+  var openNew  = document.getElementById('tlOpenNew');
+  var sidebar  = document.getElementById('tlSidebar');
+  var backdrop = document.getElementById('tlBackdrop');
+  var menuBtn  = document.getElementById('tlMenuBtn');
+  var shareBtn = document.getElementById('tlShareBtn');
+  var items    = Array.prototype.slice.call(document.querySelectorAll('.tl-item'));
+  var currentFile = null;
+
+  document.getElementById('tlCount').textContent = items.length ? '共 ' + items.length + ' 篇' : '';
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('show');
+  }
+
+  function select(el) {
+    items.forEach(function (it) { it.classList.remove('active'); });
+    el.classList.add('active');
+
+    // 展开被点击文章所在的祖先目录
+    var p = el.parentElement;
+    while (p) {
+      if (p.tagName === 'DETAILS') { p.open = true; }
+      p = p.parentElement;
+    }
+
+    var file = el.getAttribute('data-file');
+    if (frame.getAttribute('src') !== file) { frame.src = file; }
+    frame.style.display = 'block';
+    empty.style.display = 'none';
+
+    docTitle.textContent = el.getAttribute('data-title') || '未命名文章';
+    var sub = [];
+    if (el.getAttribute('data-date')) { sub.push(el.getAttribute('data-date')); }
+    if (el.getAttribute('data-desc')) { sub.push(el.getAttribute('data-desc')); }
+    docSub.textContent = sub.join(' · ') || ' ';
+
+    currentFile = file;
+    shareBtn.hidden = false;
+    openNew.href = file;
+    openNew.hidden = false;
+
+    closeSidebar();
+  }
+
+  items.forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      select(el);
+    });
+  });
+
+  // 分享：复制当前文章的独立短链（/list/xxxx.html，纯文章页，不带目录）
+  shareBtn.addEventListener('click', function () {
+    if (!currentFile) { return; }
+    var url = location.origin + currentFile;
+    var done = function () {
+      shareBtn.textContent = '已复制 ✓';
+      setTimeout(function () { shareBtn.textContent = '复制链接'; }, 1500);
+    };
+    var fallback = function () {
+      var ta = document.createElement('textarea');
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); done(); }
+      catch (e) { window.prompt('手动复制以下链接：', url); }
+      document.body.removeChild(ta);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(done, fallback);
+    } else {
+      fallback();
+    }
+  });
+
+  menuBtn.addEventListener('click', function () {
+    sidebar.classList.toggle('open');
+    backdrop.classList.toggle('show');
+  });
+  backdrop.addEventListener('click', closeSidebar);
+})();
+</script>
+
+</body>
+</html>

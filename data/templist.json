@@ -1,0 +1,29 @@
+{
+  "author": "plusluo",
+  "categories": [
+    {
+      "name": "调研",
+      "children": [
+        {
+          "name": "财经调研",
+          "children": [
+            {
+              "title": "中国互联网：坏消息现在……是好消息吗？（Bernstein 报告中文译读）",
+              "date": "2026-07-20",
+              "file": "/list/2026-07-20-bernstein-china-internet-zh.html",
+              "desc": "Bernstein《China Internet: Is bad news now... good news?》中文译读，仅供个人学习研究，不构成投资建议"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "工作日记",
+      "children": []
+    },
+    {
+      "name": "心得随笔",
+      "children": []
+    }
+  ]
+}
