@@ -2,7 +2,7 @@
 
 > 作者：plusluo
 > 创建时间：2026-04-10
-> 最后更新：2026-04-10
+> 最后更新：2026-07-22
 > 用途：本文档供 AI 助手在切换工作区后快速恢复上下文，避免记忆丢失。
 
 ---
@@ -165,22 +165,30 @@ plusluo-site/
 ├── .gitignore                          ← Git 忽略规则
 ├── .gitmodules                         ← Git Submodule 配置
 ├── .migration-log.json                 ← 搬运状态记录
-├── .github/workflows/deploy.yml        ← GitHub Actions 部署工作流
+├── .github/workflows/deploy.yml        ← GitHub Actions 工作流（GitHub Pages，遗留）
+├── edgeone.json                        ← EdgeOne Pages 配置（www → 主域名 301）
 ├── hugo.toml                           ← Hugo 主配置文件
 ├── archetypes/default.md               ← 内容模板（含图标映射注释）
-├── layouts/                            ← Layouts Override（性能优化）
+├── data/
+│   └── templist.json                   ← 【信息归档】目录数据清单（唯一维护点）
+├── layouts/                            ← Layouts Override（性能优化 + 信息归档页）
+│   ├── page/
+│   │   └── list.html                   ← 【信息归档】全屏布局（/list.html）
 │   └── partials/
 │       ├── featured-image.html         ← 图片懒加载
 │       ├── js.html                     ← JS defer
-│       └── hooks/head-end.html         ← 资源预加载
+│       ├── hooks/head-end.html         ← 资源预加载
+│       └── templist/tree.html          ← 【信息归档】递归树形目录
 ├── content/                            ← 博客内容
 │   ├── article/ code/ audio/ video/
 │   ├── gallery/ picture/ link/ quote/
 │   ├── status/ page/
+│   ├── list.md                         ← 【信息归档】页面入口（标题"信息归档"）
 │   └── archive.md
 ├── static/
 │   ├── images/avatar.jpg               ← 站点头像
-│   └── CNAME                           ← GitHub Pages 域名
+│   ├── list/                           ← 【信息归档】文章平铺目录（/list/xxxx.html 短链）
+│   └── CNAME                           ← GitHub Pages 域名（遗留）
 ├── scripts/
 │   ├── migrate.py                      ← 内容搬运脚本
 │   ├── migrate_config.yaml             ← 搬运配置
@@ -189,6 +197,14 @@ plusluo-site/
 ├── public/                             ← Hugo 构建输出（已 gitignore）
 └── resources/                          ← Hugo 资源缓存（已 gitignore）
 ```
+
+### 信息归档资源管理规则（2026-07-22 新增，完整规范见「八-补充」）
+
+1. **唯一维护点**：目录结构与文章元数据全部在 `data/templist.json` 维护；含 `children` 键为目录节点、含 `file` 键为文章节点，支持任意层级嵌套。**调整目录只改 JSON，不动模板**。
+2. **文章平铺存放**：所有归档文章放在 `static/list/` 同一个目录下，对外即 `/list/xxxx.html` 独立短链（纯文章页，无任何目录），也就是转发分享用的地址。
+3. **命名查重**：新增文章前**必须检查文件名不与 `static/list/` 下已有文件重复**，建议 `YYYY-MM-DD-主题.html`（日期前缀天然防重）。
+4. **新增文章三步**：① HTML 放入 `static/list/` → ② `data/templist.json` 添加条目（title/date/file/desc）→ ③ 提交推送，自动构建部署。
+5. 归档页未加入 `topnav` 菜单，仅通过直接 URL 访问；`https://plusluo.cn/list.html` 为带目录的归档首页。
 
 ---
 
@@ -223,13 +239,20 @@ cd themes/bilberry-hugo-theme && git pull origin master && cd ../..
 
 ## 八、CI/CD 配置
 
-### GitHub Actions 工作流
+### 实际托管：EdgeOne Pages（2026-07-22 验证生效）
+
+- **plusluo.cn 当前托管在 EdgeOne Pages**：DNS `plusluo.cn` CNAME → `*.pages.dnsoe9.com`（43.174.x.x）
+- **部署方式**：push 到 `master` → EdgeOne Pages 自动拉取构建并发布，约 1 分钟生效
+- **`edgeone.json`**：`www.plusluo.cn` → `plusluo.cn` 301 跳转
+- **构建说明**：云端构建与本地 `hugo --gc --minify` 等价；信息归档页产出 `public/list.html`（文件）与 `public/list/`（目录）可共存，无路由冲突
+
+### GitHub Actions 工作流（GitHub Pages，plusluo.site 时期遗留，保留中）
 
 - **文件**: `.github/workflows/deploy.yml`
-- **触发条件**: push 到 `master` 分支 或 手动触发
+- **触发条件**: push 到 `master` 分支 或 手动触发（push 时与 EdgeOne 部署并行执行，互不影响）
 - **Hugo 版本**: v0.160.1（extended）
 - **流程**: Checkout(含submodule) → Install Hugo → Build(--gc --minify) → Deploy to GitHub Pages
-- **部署目标**: GitHub Pages + 自定义域名 `plusluo.site`
+- **部署目标**: GitHub Pages（`static/CNAME` 也是该机制遗留；如确认弃用，可关闭此工作流并删除 `static/CNAME`）
 
 ### 首次部署待操作
 1. 在 GitHub 创建 `plusluo-site` 仓库
@@ -240,7 +263,7 @@ cd themes/bilberry-hugo-theme && git pull origin master && cd ../..
 
 ---
 
-## 八-补充、信息归档页（/list.html + /list/xxxx.html）
+## 八-补充、信息归档页完整规范（/list.html + /list/xxxx.html）
 
 > 2026-07-22 新增。独立于博客主题外壳的全屏页面，左树右文，用于归档知识信息类内容（AI 或他人所写、收集摘抄的；联合整理的；自己写过再包装加工的），并非全为本人手写。
 
